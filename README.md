@@ -1,412 +1,335 @@
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
-    // FUNCTION DPDTRUN
-    //
-    // For a given flyby of a nominal body position Pnom, calculate the
-    // ephemeris of a pseudo-body (CB3 or P) directly uptrack or downtrack
-    // (i.e. along the flyby velocity vector) from Pnom, such that if any
-    // spacecraft (S/C) instrument points its boresight at CB3 throughout
-    // the flyby, the scan rate (radians/second) of the actual body, at an
-    // unknown position but assumed to be fixed directly uptrack or
-    // downtrack wrt Pnom, across that boresight will remain constant.
-    //
-    //                                           |         |          |
-    //                                       --->|deltaX(t)|<---      |
-    //                                           |         |          |
-    //                                           |     --->|   P(t)   |<---
-    //                                           |         |          |
-    //                                           |         |          |
-    //   ----------------------------------------|---------CB3(t)-----Pnom
-    //     ^           +Y                        |        /
-    //     |           ^                         |       /
-    //     |           |                         |      /<==Boresight
-    //     |           | Inertial                |     /
-    //   deltaY        | Reference               |    /
-    //     |           | Frame                 ->|   /<-Theta, positive away
-    //     |          -+----------->+X           |  /   from +Y toward +X
-    //     |           |                         | /
-    //     V                                     |/
-    //   ----------------------------------------Sc(t)====>-------------
-    //                                                   ^
-    //                                                   |
-    //                        Flyby velocity vector, V --+  ||V|| = vFb
-    //
-    //
-    // RETURN VALUE:
-    // =============
-    //
-    // Structures containing, among other things
-    // - .Ts        = array of seconds past nominal body TCA* (i.e. t-TCA), s
-    // - .PsFormula = P(t) from analytical solution to the differential equation
-    // - .PsRK4     = P(t) Runge-Kutta integration solution to the diff. eqn.
-    //
-    // * TCA => Time of Closest Approach, of spacecraft to Pnom
-    //
-    //   - N.B. .PsRK4 and .PsFormula correspond to .Ts values
-    //
-    // - Input parameters as used
-    // - Various calculated rates, ranges, derivatives
-    //
-    //
-    // ARGUMENTS:
-    // ==========
-    //
-    // dThDtTDI  TMR:  desired scan rate of actual body across FOV, rad/s
-    //           - A positive value means that the CB3 moves downtrack with
-    //             respect to Pnom, even as Theta may decrease or increase,
-    //             with increasing time
-    // deltaY    Flyby (Fb) distance, km
-    // vFb       Speed of flyby, km/s, should be non-negative
-    // DelT      Integration timestep, s; defaults to 1s if not present
-    //
-    //
-    // KEYWORDS:
-    // =========
-    //
-    // xEll_km=xEll_km     Extent of ellipse to be covered wrt nominal target, km
-    //                     - If one value specified:  -|xEll_km| to +|xEll_km|
-    //                     - If two values specified:  min(xEll_km) to max(xEll_km)
-    //                        - positive implies => +X => direction of S/C velocity
-    //                     - This procedure integrates the CB3 position between
-    //                       these two values at a minimum
-    //
-    //
-    // xEll_s=xEll_s       IFF xEll_km not specified, extent of ellipse
-    //                     wrt nominal target, s past CA (t - TCA) at vFb
-    //                     - default: 150s
-    //                     - same scheme as xEll_km for one or two values
-    //                     - same scheme as xEll_km for one or two values
-    //                       - positive implies => +X => direction of S/C velocity
-    //
-    // xCb3_0_km=xCb3_0_km   Initial CB3 position wrt nominal target, km
-    //                       - positive implies => +X => direction of S/C velocity
-    // xCb3_0_s=xCb3_0_s     IFF xCb3_0_km not specified, initial CB3 position
-    //                       wrt nominal target, s past CA (CB3t0 - TCA) at vFb
-    //                       - default:  0s
-    //                       - positive implies => +X => direction of S/C velocity
-    //
-    // xSc0_km=xSc0_km       Initial S/C position wrt nominal target, km
-    //                       - positive implies => +X => direction of S/C velocity
-    // xSc0_s=xSc0_s         IFF xSc0_km not specified, initial S/C position
-    //                       wrt nominal target, s past CA (SCt0 - TCA) at vFb
-    //                       - default:  0s
-    //                       - positive implies => +X => direction of S/C velocity
-    //
-    // debug                 Enable debugging output
-    //
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
-    // FUNCTION DPDT
-    //
-    // Derivative function to support DPDTRUN:  used as argument Derivs
-    // to 4-order Runge-Kutta solution.  See derivation below.
-    //
-    // ARGUMENTS:
-    // ==========
-    //
-    // theTime   Time at which to calculate derivative
-    // pATt      Current value of P = CB3(t)
-    //
-    function dpdt, theTime, pATt, initstruct=instr
-    common dpdt_cmn, dThDtTDI, deltaY, vFb
-    if n_elements(instr) eq 1L then begin
-      dThDtTDI = double(instr.dThDtTDI) // desired net scan rate, rad/s
-      deltaY = double(instr.deltaY)     // Flyby distance, km/s
-      vFb = double(instr.vFb)           // Flyby speed, km
-      return,[0d0]
-    endif
-    t = double(theTime[0])
-    deltaX = double(pATt[0]) - (vFb * t)
-    return, dThDtTDI * [deltaY  + (deltaX * deltaX / deltaY) ]
-    end
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
-    // Derivation of dPdT function:
-    ////////////////////////////////////////////////////////////////////////
-    //
-    // Refer to the diagram above.
-    //
-    // A spacecraft (S/C) is flying by an object (i.e. Pluto) with a
-    // position uncertainty ellipsoid that is shaped like a cigar with its
-    // long axis along the flyby velocity vector.  It is desired to scan an
-    // instrument boresight along the long axis of the uncertainty
-    // ellipsoid such that, whereever the  object is, when the scan passes
-    // over it, the object moves across the FOV at a fixed angular rate,
-    // typically the scan rate of a Time Delay  Integration (TDI) CCD
-    // converted via the optics geometry to radian/s.
-    //
-    // The scan rate across a S/C instrument's FOV of an object
-    // at [Pnom + CB3(t)] is
-    //
-    //   dThDtTDI = dThDt + dThDtFb                                     [1]
-    //
-    // where
-    //
-    //   Pnom     = Nominal target position = inertial frame origin
-    //   CB3(t)   = Time-dependent offset from Pnom along X, vector [P(t),0,0]
-    //   dThDtTDI = Desired scan rate, constant, rad/s
-    //   Theta(t) = Inertial angle of boresight, +Y=0, +X positive, radians
-    //   dThDt    = dTheta / dt, inertial angular rate of Theta, rad/s
-    //   dThDtFb  = Instantaneous scan rate of a fixed target at CB3(t) wrt
-    //                FOV due to S/C-target translational motion, rad/s
-    //
-    // Since Theta(t) is by definition the instantaneous angle of the
-    // boresight pointing at any actual fixed target at CB3(t) from S/C(t),
-    // the scan rate contribution of that fixed target across the boresight
-    // due to relative translational motion is the ratio of [the motion of
-    // the fixed object perpendicular to the boresight] to [the range
-    // between the S/C and the fixed object]:
-    //
-    //             vFb * cos(Theta)                 2
-    //  dThDtFb = ---------------------- = vFb * cos (Theta) / deltaY   [2]
-    //            deltaY / cos(Theta)
-    //
-    //
-    // Substituting into [1] and solving for dThDt,
-    //
-    //                                2
-    //  dThDt = dThDtTDI  -  vFb * cos (Theta) / deltaY                 [3]
-    //
-    // The distance along the flyby direction (+X) between the spacecraft
-    // and the object can be derived from two formulae:
-    //
-    //  deltaX = P(t)  -  vFb * t                                       [4]
-    //  deltaX = deltaY * tan(Theta)                                    [5]
-    //
-    // where t is time and is zero at TCA to Pnom.  Setting [4] equal to [5]
-    // and solving for P(t) yields
-    //
-    //  P(t) = deltaY * tan(Theta)  +  vFb * t                          [6]
-    //
-    //
-    // Solving for dP/dt yields
-    //
-    //                     2
-    //  dP/dt = (deltaY/cos (Theta)) * dTh/dt  +  vFb                   [7]
-    //
-    //
-    // Substituting [3] for dTh/dt into [7]:
-    //
-    //                                                 2
-    //            deltaY        /             vFb * cos (Theta) \
-    //  dP/dt = -----------  * ( dThDtTDI  -  -----------------  )  +  vFb
-    //             2            \                   deltaY      /
-    //          cos (Theta)
-    //
-    //                                 2
-    //  dP/dt = deltaY * dThDtTDI / cos (Theta)  -  vFb  +  vFb
-    //
-    //                                 2
-    //  dP/dt = deltaY * dThDtTDI / cos (Theta)                         [8]
-    //
-    //
-    // Substituting the trigonomtric identity
-    //
-    //     2                    2          2         2
-    //  cos (Theta(t)) =  deltaY  / (deltaY  + deltaX  )
-    //
-    //
-    // yields
-    //
-    //                                    2         2
-    //                              deltaY  + deltaX
-    //  dP/dt = deltaY * dThDtTDI * -------------------
-    //                                         2
-    //                                   deltaY
-    //
-    //
-    // and, after rearranging,
-    //
-    //                                         2
-    //                      /            deltaX  \
-    //  dP/dt = dThDtTDI * (  deltaY  +  ------   )                     [9]
-    //                      \            deltaY  /
-    //
-    //
-    // Finally, substituting equation [4] for deltaX yields the equation
-    // [10], which is used in method dpdt above as part of the 4th-order
-    // Runge-Kutta solution:
-    //
-    //                                                 2
-    //                      /          (P(t) - vFb * t)  \
-    //  dP/dt = dThDtTDI * (  deltaY + -----------------  )            [10]
-    //                      \               deltaY       /
-    //
-    ////////////////////////////////////////////////////////////////////////
-    // Final note:
-    // When the range to the object is large and/or the flyby distance
-    // (deltaY) is large compared to the distance the S/C moves during the
-    // scan, dThDtFb is essentially constant, and this derivation is not
-    // relevant.
-    //
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
-    // Analytical solution (developed after the RK4 solution)
-    //                               2
-    //  dThDt = dThDtTDI -  vFb * cos (Theta) / deltaY                  [3]
-    //
-    // Substituting
-    //
-    //  b^2   = vFb / (dThDtTDI * deltaY)
-    //
-    //   - see Note 1 below for case where this quantity is negative
-    //
-    // yields
-    //
-    //        dTheta
-    //  --------------------- = dThDtTDI * dt   [11]
-    //               2
-    //  1 - b^2 * cos (Theta)
-    //                                                         2
-    // N.B. for b^2=1, the left side of [11] becomes dTheta/sin (Theta)
-    //
-    // Substituting
-    //
-    //  broot = SQRT(b^2 - 1)     if b^2 > 1
-    //
-    //  broot = SQRT(1 - b^2)     if b^2 < 1
-    //
-    // and integrating both sides of [11] (see Notes 1) depending on the
-    // value of b^2:
-    //
-    //                1        / tan(Theta) - broot \
-    //  b^2 > 1:  --------- ln( ------------------   ) = dThDtTDI * t + C  [12a]
-    //            2 * broot    \ tan(Theta) + broot /
-    //
-    //
-    //              1      -1 / tan(Theta) \
-    //  b^2 < 1:  ----- tan  (  ----------  )          = dThDtTDI * t + C  [12b]
-    //            broot       \   broot    /
-    //
-    //
-    //  b^2 = 1:  - cot(Theta)  =  - 1 / tan(Theta)    = dThDtTDI * t + C  [12c]
-    //
-    //
-    // where C is the constant of integration and may be evaluated at t = zero
-    // as the left hand sides of [12*]; any other time tReal may be converted
-    // to 't' by means of a constant offset (t = tReal - tReal0), and Theta(t=0)
-    // defined as ThetaReal(tReal=tReal0), the initial condition for the ODE.
-    //
-    // Note 1:  Integrals 376, 375, & 308  in section A of "CRC Handbook of
-    //          Chemistry and Physics," Weast, Robert C. (ed), 56th edition,
-    //          CRC Press, pp. A-136, A-138, 1974.  The first form of integral
-    //          376 and the is essentially identical to 375 where 375 covers the
-    //          case where dThDtTDI is negative.
-    //
-    // Substituting
-    //
-    //  deltaX/deltaY = tan(Theta)
-    //
-    //  T             = dThDtTDI * t + C
-    //
-    // into [12*] and solving for deltaX:
-    //
-    //
-    //                    deltaY * broot * ( exp(2*broot*T) + 1 )
-    // b^2 > 1:  deltaX = ---------------------------------------       [13a]
-    //                         1 + exp(2*broot*T)
-    //
-    // b^2 < 1:  deltaX = deltaY * broot * tan(broot*T) + 1 )           [13b]
-    //
-    // b^2 < 1:  deltaX = - deltaY / T                                  [13c]
-    //
-    ////////////////////////////////////////////////////////////////////////
-    function deltaXSolved, t, initDeltaX0=argDeltaX0
-    common dpdt_cmn
-    common dxsd_cmn, b2, broot, constint
+    /*//////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////
+    DPDTRUN
+    =======
 
-    //////////////////////////////////
-    // - calculate constants, store in common block:
-    //   - b2 => b^2
-    //   - broot = SQRT(b^2 - 1) or SQRT(1 - b^2)
-    //   - constant of integration
+    For a given flyby of a nominal body position Pnom, calculate the
+    ephemeris of a pseudo-body (CB3 or P) directly uptrack or downtrack
+    (i.e. along the flyby velocity vector) from Pnom, such that if any
+    spacecraft (S/C) instrument points its boresight at CB3 throughout
+    the flyby, the scan rate (radians/second) of the actual body, at an
+    unknown position but assumed to be fixed directly uptrack or
+    downtrack wrt Pnom, across that boresight will remain constant.
 
-    if n_elements(argDeltaX0) eq 1L then begin
+                                              |         |          |
+                                          --->|deltaX(t)|<---      |
+                                              |         |          |
+                                              |     --->|   P(t)   |<---
+                                              |         |          |
+                                              |         |          |
+      ----------------------------------------|---------CB3(t)-----Pnom
+        ^           +Y                        |        /
+        |           ^                         |       /
+        |           |                         |      /<==Boresight
+        |           | Inertial                |     /
+      deltaY        | Reference               |    /
+        |           | Frame                 ->|   /<-Theta, positive away
+        |          -+----------->+X           |  /   from +Y toward +X
+        |           |                         | /
+        V                                     |/
+      ----------------------------------------Sc(t)====>-------------
+                                                      ^
+                                                      |
+                           Flyby velocity vector, V --+  ||V|| = vFb
 
-      deltaX0 = double(argDeltaX0[0])
 
-      b2 = vFb / ( dThDtTDI * deltaY)
-      broot = sqrt(abs(b2 - 1))
-      tanth = deltaX0 / deltaY
+    * TCA => Time of Closest Approach, of spacecraft to Pnom
 
-      ////////////////////////////////
-      // - constant of integration
+    Input parameters (constants)
+    ----------------------------
 
-      if b2 gt 1d0 then begin
-        constint = alog( (tanth - broot) / (tanth + broot) ) / (2d0 * broot)
-      endif else if b2 lt 1d0 then begin
-        constint = atan( tanth / broot) / broot
-      endif else begin
-        constint = - deltaY / deltaX0
-      endelse
-      return, 0d0
-    endif
+    dThDtTDI  TMR:  desired scan rate of actual body across FOV, rad/s
+              - A positive value means that the CB3 moves downtrack with
+                respect to Pnom, even as Theta may decrease or increase,
+                with increasing time
+    deltaY    Flyby (Fb) distance, km
+    vFb       Speed of flyby, km/s, should be non-negative
+    DelT      Integration timestep, s; defaults to 1s if not present
 
-    //////////////////////////////////
-    // - calculate solution
 
-    kTplusC = (dThDtTDI * double(t[0])) + constint
+    Initial conditions
+    ------------------
 
-    //////////////////////////////////
-    // Equation [13a]:  b^2 > 1
+    xEll_km     Extent of ellipse to be covered wrt nominal target, km
+                - If one value specified:  -|xEll_km| to +|xEll_km|
+                - If two values specified:  min(xEll_km) to max(xEll_km)
+                   - positive implies => +X => direction of S/C velocity
+                - This procedure integrates the CB3 position between
+                  these two values at a minimum
 
-    if b2 gt 1d0 then begin
-      exp2BT = exp(2d0 * broot * kTplusC)
-      return, deltaY * ( broot * (1d0 + exp2BT) ) / (1d0 - exp2BT)
-    endif
 
-    //////////////////////////////////
-    // Equation [13b]:  b^2 < 1
+    xEll_s      IFF xEll_km not specified, extent of ellipse
+                wrt nominal target, s past CA (t - TCA) at vFb
+                - default: 150s
+                - same scheme as xEll_km for one or two values
+                - same scheme as xEll_km for one or two values
+                  - positive implies => +X => direction of S/C velocity
 
-    if b2 lt 1d0 then return, deltaY * broot * tan(broot * kTplusC)
+    xCb3_0_km   Initial CB3 position wrt nominal target, km
+                - positive implies => +X => direction of S/C velocity
+    xCb3_0_s    IFF xCb3_0_km not specified, initial CB3 position
+                wrt nominal target, s past CA (CB3t0 - TCA) at vFb
+                - default:  0s
+                - positive implies => +X => direction of S/C velocity
 
-    //////////////////////////////////
-    // Equation [13c]:  b^2 = 1
+    xSc0_km     Initial S/C position wrt nominal target, km
+                - positive implies => +X => direction of S/C velocity
+    xSc0_s      IFF xSc0_km not specified, initial S/C position
+                wrt nominal target, s past CA (SCt0 - TCA) at vFb
+                - default:  0s
+                - positive implies => +X => direction of S/C velocity
 
-    return, - deltaY / kTplusC
-
-    end
 
     ////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////
-    function gettx,sVal,tx,pfx=pfx
-    pfxLcl = n_elements(pfx) eq 1L ? strtrim(pfx[0],2) : ""
-    return,string(f="(a,a,a,a,a,a,a,a,a)",pfxLcl,"<t",tx,">",strtrim(sVal,2),"</t",tx,">")
-    end
-    function getthead,sVal,pfx=pfx
-    return,gettx(sVal,"head",pfx=pfx)
-    end
-    function gettd,sVal,pfx=pfx
-    return,gettx(sVal,"d",pfx=pfx)
-    end
-    function getth,sVal,pfx=pfx
-    return,gettx(sVal,"h",pfx=pfx)
-    end
-    function gettr,sVal,pfx=pfx
-    return,gettx(sVal,"r",pfx=pfx)
-    end
-    function gethdpair,sName,xVal
-    s = getth(sName)
-    s = gettd(xVal,pfx=s)
-    return, gettr(s)
-    end
-    pro pla,lun,s
-    printf,lun,f="(a)",s
-    end
+    FUNCTION DPDT
+    =============
+
+    Derivative function to support DPDTRUN:  used to calculate dy/dx
+    (derivative) for fourth-order Runge-Kutta solution; see derivation below.
+
+    Arguments
+    ---------
+
+    t   Time at which to calculate derivative (t=0 is start of integration)
+    P   CB3(t), current value of P
+    ////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////*/
+
+    public double dpdt(double t, double P) {
+        deltaX = P - (vFb * t);
+        return dThDtTDI * (deltaY  + (deltaX * deltaX / deltaY));
+    }
+
+    /*//////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    Derivation of dPdT function
+    ===========================
+
+    Refer to the diagram above.
+
+    A spacecraft (S/C) is flying by an object (i.e. Pluto) with a
+    position uncertainty ellipsoid that is shaped like a cigar with its
+    long axis along the flyby velocity vector.  It is desired to scan an
+    instrument boresight along the long axis of the uncertainty
+    ellipsoid such that, whereever the  object is, when the scan passes
+    over it, the object moves across the FOV at a fixed angular rate,
+    typically the scan rate of a Time Delay  Integration (TDI) CCD
+    converted via the optics geometry to radian/s.
+
+    The scan rate across a S/C instrument's FOV of an object
+    at [Pnom + CB3(t)] is
+
+      dThDtTDI = dThDt + dThDtFb                                     [1]
+
+    where
+
+      Pnom     = Nominal target position = inertial frame origin
+      CB3(t)   = Time-dependent offset from Pnom along X, vector [P(t),0,0]
+      dThDtTDI = Desired scan rate, constant, rad/s
+      Theta(t) = Inertial angle of boresight, +Y=0, +X positive, radians
+      dThDt    = dTheta / dt, inertial angular rate of Theta, rad/s
+      dThDtFb  = Instantaneous scan rate of a fixed target at CB3(t) wrt
+                   FOV due to S/C-target translational motion, rad/s
+
+    Since Theta(t) is by definition the instantaneous angle of the
+    boresight pointing at any actual fixed target at CB3(t) from S/C(t),
+    the scan rate contribution of that fixed target across the boresight
+    due to relative translational motion is the ratio of [the motion of
+    the fixed object perpendicular to the boresight] to [the range
+    between the S/C and the fixed object]:
+
+                vFb * cos(Theta)                 2
+     dThDtFb = ---------------------- = vFb * cos (Theta) / deltaY   [2]
+               deltaY / cos(Theta)
+
+
+    Substituting into [1] and solving for dThDt,
+
+                                   2
+     dThDt = dThDtTDI  -  vFb * cos (Theta) / deltaY                 [3]
+
+    The distance along the flyby direction (+X) between the spacecraft
+    and the object can be derived from two formulae:
+
+     deltaX = P(t)  -  vFb * t                                       [4]
+     deltaX = deltaY * tan(Theta)                                    [5]
+
+    where t is time and is zero at TCA to Pnom.  Setting [4] equal to [5]
+    and solving for P(t) yields
+
+     P(t) = deltaY * tan(Theta)  +  vFb * t                          [6]
+
+
+    Solving for dP/dt yields
+
+                        2
+     dP/dt = (deltaY/cos (Theta)) * dTh/dt  +  vFb                   [7]
+
+
+    Substituting [3] for dTh/dt into [7]:
+
+                                                    2
+               deltaY        /             vFb * cos (Theta) \
+     dP/dt = -----------  * ( dThDtTDI  -  -----------------  )  +  vFb
+                2            \                   deltaY      /
+             cos (Theta)
+
+                                    2
+     dP/dt = deltaY * dThDtTDI / cos (Theta)  -  vFb  +  vFb
+
+                                    2
+     dP/dt = deltaY * dThDtTDI / cos (Theta)                         [8]
+
+
+    Substituting the trigonomtric identity
+
+        2                    2          2         2
+     cos (Theta(t)) =  deltaY  / (deltaY  + deltaX  )
+
+
+    yields
+
+                                       2         2
+                                 deltaY  + deltaX
+     dP/dt = deltaY * dThDtTDI * -------------------
+                                            2
+                                      deltaY
+
+
+    and, after rearranging,
+
+                                            2
+                         /            deltaX  \
+     dP/dt = dThDtTDI * (  deltaY  +  ------   )                     [9]
+                         \            deltaY  /
+
+
+    Finally, substituting equation [4] for deltaX yields the equation
+    [10], which is used in method dpdt above as part of the 4th-order
+    Runge-Kutta solution:
+
+                                                    2
+                         /          (P(t) - vFb * t)  \
+     dP/dt = dThDtTDI * (  deltaY + -----------------  )            [10]
+                         \               deltaY       /
 
     ////////////////////////////////////////////////////////////////////////
+    Final note:
+    When the range to the object is large and/or the flyby distance
+    (deltaY) is large compared to the distance the S/C moves during the
+    scan, dThDtFb is essentially constant, and this derivation is not
+    relevant.
     ////////////////////////////////////////////////////////////////////////
-    function dpdtrun, argDThDtTDI, argDeltaY, argVFb, argDelT $
-                  , xEll_km=xEll_km, xEll_s=xEll_s $
-                  , xCb3_0_km=xCb3_0_km, xCb3_0_s=xCb3_0_s $
-                  , xSc0_km=xSc0_km, xSc0_s=xSc0_s $
-                  , xlsOut=xlsOut $
-                  , debug=debug
-    common dpdt_cmn
+    //////////////////////////////////////////////////////////////////////*/
 
-    dodebug = keyword_set(debug)
-    nodebug = not keyword_set(debug)
+
+    /*//////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+
+    Analytical solution (developed after the RK4 solution)
+    ======================================================
+
+                                  2
+     dThDt = dThDtTDI -  vFb * cos (Theta) / deltaY                  [3]
+
+    Substituting
+
+     b^2   = vFb / (dThDtTDI * deltaY)
+
+      - see Note 1 below for case where this quantity is negative
+
+    yields
+
+           dTheta
+     --------------------- = dThDtTDI * dt   [11]
+                  2
+     1 - b^2 * cos (Theta)
+                                                            2
+    N.B. for b^2=1, the left side of [11] becomes dTheta/sin (Theta)
+
+    Substituting
+
+     broot = SQRT(b^2 - 1)     if b^2 > 1
+
+     broot = SQRT(1 - b^2)     if b^2 < 1
+
+    and integrating both sides of [11] (see Notes 1) depending on the
+    value of b^2:
+
+                   1        / tan(Theta) - broot \
+     b^2 > 1:  --------- ln( ------------------   ) = dThDtTDI * t + C  [12a]
+               2 * broot    \ tan(Theta) + broot /
+
+
+                 1      -1 / tan(Theta) \
+     b^2 < 1:  ----- tan  (  ----------  )          = dThDtTDI * t + C  [12b]
+               broot       \   broot    /
+
+
+     b^2 = 1:  - cot(Theta)  =  - 1 / tan(Theta)    = dThDtTDI * t + C  [12c]
+
+
+    where C is the constant of integration and may be evaluated at t = zero
+    as the left hand sides of [12*]; any other time tReal may be converted
+    to 't' by means of a constant offset (t = tReal - tReal0), and Theta(t=0)
+    defined as ThetaReal(tReal=tReal0), the initial condition for the ODE.
+
+    Note 1:  Integrals 376, 375, & 308  in section A of "CRC Handbook of
+             Chemistry and Physics," Weast, Robert C. (ed), 56th edition,
+             CRC Press, pp. A-136, A-138, 1974.  The first form of integral
+             376 and the is essentially identical to 375 where 375 covers the
+             case where dThDtTDI is negative.
+
+    Substituting
+
+     deltaX/deltaY = tan(Theta)
+
+     T             = dThDtTDI * t + C
+
+    into [12*] and solving for deltaX:
+
+
+                       deltaY * broot * ( exp(2*broot*T) + 1 )
+    b^2 > 1:  deltaX = ---------------------------------------       [13a]
+                            1 + exp(2*broot*T)
+
+    b^2 < 1:  deltaX = deltaY * broot * tan(broot*T) + 1 )           [13b]
+
+    b^2 < 1:  deltaX = - deltaY / T                                  [13c]
+
+    ////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////*/
+
+    public double deltaXSolved(t) {
+
+        //////////////////////////////////
+        // - Calculate solution
+
+        kTplusC = (dThDtTDI * t) + constint;
+
+        //////////////////////////////////
+        // Equation [13a]:  b^2 > 1
+
+        if (b2 > 1d0) {
+          exp2BT = Math.exp(2d0 * broot * kTplusC);
+          return deltaY * ( broot * (1d0 + exp2BT) ) / (1d0 - exp2BT);
+        }
+
+        //////////////////////////////////
+        // Equation [13b]:  b^2 < 1
+
+        if (b2 < 1d0) return deltaY * broot * Math.tan(broot * kTplusC);
+
+        //////////////////////////////////
+        // Equation [13c]:  b^2 = 1
+
+        return - deltaY / kTplusC;
+    }
+
+    /*//////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
+    Old IDL input argument processing code
 
     //////////////////////////////////
     // Input arguments:
@@ -465,18 +388,6 @@
 
     fwdDelT = abs(inpDelT)
     bwdDelT = -fwdDelT
-
-    //////////////////////////////////
-    // debug output
-
-    if dodebug then begin
-      print, f='(2(a10,2a15))' $
-           , 'newT(bwd)', 'newP(RK4,bwd)', 'newP(Form,bwd)' $
-           , 'newT(fwd)', 'newP(RK4,fwd)', 'newP(Form,fwd)'
-
-      print, f='(f10.1,2g15.7)' $
-        , Ts[0], PsRK4[0], PsFormula[0]
-    endif
 
     iBwd = 0L
     iFwd = 0L
@@ -746,3 +657,6 @@
 
     return, rtn
     end
+
+    ////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////*/
