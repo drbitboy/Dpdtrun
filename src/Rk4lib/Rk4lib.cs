@@ -6,16 +6,11 @@ using System.Threading.Tasks;
 
 namespace Rk4lib
 {
-    public class Rk4_params_base
-    {
-        // Base class for passing parameters to dydx
-    };
 
-    public class Rk4
+    public abstract class Rk4
     {
-        public Rk4_params_base parameters { set; get; }
-        public delegate double DYDX(double x, double y, Rk4_params_base o);
-        public DYDX dydx { set; get; }
+        public abstract double dydx(double x, double y);
+
         public List<List<double>> Rk4_solve(double x0, double y0, double x, double h)
         {
             double shadow_h = h > 0 ? h : -h;
@@ -40,10 +35,10 @@ namespace Rk4lib
             {
                 shadow_x0 += shadow_h;
 
-                esty0 = h * dydx(lcl_x,                    lcl_y,                parameters);
-                esty1 = h * dydx(lcl_x_hh = lcl_x + halfh, lcl_y + (esty0 / 2d), parameters);
-                esty2 = h * dydx(lcl_x_hh,                 lcl_y + (esty1 / 2d), parameters);
-                esty3 = h * dydx(lcl_x += h,               lcl_y + esty2,        parameters);
+                esty0 = h * dydx(lcl_x,                    lcl_y);
+                esty1 = h * dydx(lcl_x_hh = lcl_x + halfh, lcl_y + (esty0 / 2d));
+                esty2 = h * dydx(lcl_x_hh,                 lcl_y + (esty1 / 2d));
+                esty3 = h * dydx(lcl_x += h,               lcl_y + esty2);
 
                 lcl_y += (esty0 + (2d * (esty1 + esty2)) + esty3) / 6d;
 
