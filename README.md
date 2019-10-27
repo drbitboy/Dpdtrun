@@ -23,17 +23,16 @@
     sequence, as the scan rate of a Time Delay Integration (TDI) CCD.
 
 
-    DPDTRUN
-    =======
+    DPDTRUN purpose
+    ===============
 
     For a given flyby of a nominal body position Pnom, calculate the
-    ephemeris of a pseudo-body (CB3 a.k.a. P) directly uptrack or
-    downtrack (i.e. along the flyby velocity vector) from Pnom, such
-    that if any S/C instrument points its boresight at CB3 throughout
-    the flyby, the scan rate (radian/second) of the actual body, at an
-    unknown position but assumed to be fixed directly uptrack or
-    downtrack wrt Pnom, across that boresight will remain at the
-    constant sequenced value.
+    ephemeris of a pseudo-body (CB3 a.k.a. P) along-track wrt Pnom,
+    such that if any S/C instrument points its boresight at CB3 through-
+    out the flyby, the scan rate (radian/second) of the actual body, at
+    an unknown position but assumed to be fixed somewhere along-track
+    wrt Pnom, across that boresight will remain at the constant
+    sequenced value.
 
 
                                               |         |          |
