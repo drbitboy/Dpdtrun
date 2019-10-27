@@ -92,7 +92,6 @@
                 wrt nominal target, s past CA (t - TCA) at vFb
                 - default: 150s
                 - same scheme as xEll_km for one or two values
-                - same scheme as xEll_km for one or two values
                   - positive implies +X i.e. downtrack
 
     xCb3_0_km   Initial CB3 position wrt nominal target, km
