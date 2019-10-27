@@ -1,15 +1,40 @@
     /*//////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////
+
+    Background
+    ==========
+
+    A spacecraft (S/C e.g. New Horizons) is flying on a linear
+    trajectory past a target (e.g. Pluto), with a 99%+ probability that
+    the target is inside a volume shaped like a cigar with its long axis
+    parallel to the flyby velocity vector.  The observation scans an
+    instrument across the target, which instrument has a Field Of View
+    (FOV) far greater than the smaller axes of the cigar.  So the target
+    will be visible in the instrument FOV at some point as long as the
+    instrument boresight is scanned along that long axis during the
+    observation.
+
+    However, there is a much more stringent requirement determining
+    exactly *how* the boresight moves along that axis.  Specifically,
+    the instrument boresight must be scanned along the long axis of the
+    cigar such that, when the boresight passes over the target, the
+    angular rate of the target with respect to the instrument frame is a
+    precise fixed value.  That value is typically set, via a S/C command
+    sequence, as the scan rate of a Time Delay Integration (TDI) CCD.
+
+
     DPDTRUN
     =======
 
     For a given flyby of a nominal body position Pnom, calculate the
-    ephemeris of a pseudo-body (CB3 or P) directly uptrack or downtrack
-    (i.e. along the flyby velocity vector) from Pnom, such that if any
-    spacecraft (S/C) instrument points its boresight at CB3 throughout
-    the flyby, the scan rate (radians/second) of the actual body, at an
+    ephemeris of a pseudo-body (CB3 a.k.a. P) directly uptrack or
+    downtrack (i.e. along the flyby velocity vector) from Pnom, such
+    that if any S/C instrument points its boresight at CB3 throughout
+    the flyby, the scan rate (radian/second) of the actual body, at an
     unknown position but assumed to be fixed directly uptrack or
-    downtrack wrt Pnom, across that boresight will remain constant.
+    downtrack wrt Pnom, across that boresight will remain at the
+    constant sequenced value.
+
 
                                               |         |          |
                                           --->|deltaX(t)|<---      |
@@ -20,17 +45,24 @@
       ----------------------------------------|---------CB3(t)-----Pnom
         ^           +Y                        |        /
         |           ^                         |       /
-        |           |                         |      /<==Boresight
-        |           | Inertial                |     /
-      deltaY        | Reference               |    /
-        |           | Frame                 ->|   /<-Theta, positive away
-        |          -+----------->+X           |  /   from +Y toward +X
-        |           |                         | /
+        |           |                         |      /<=Boresight line,
+        |           | Inertial                |     /    pointing from
+      deltaY        | Reference               |    /      S/C toward CB3
+        |           | Frame                   |   /
+        |          -+----------->+X         ->|  /<-Theta, positive
+        |           |                         | /    wrt +Y toward +X
         V                                     |/
-      ----------------------------------------Sc(t)====>-------------
+      ----------------------------------------Sc(t)====>--------------
                                                       ^
                                                       |
                            Flyby velocity vector, V --+  ||V|| = vFb
+
+    Jargon
+    ------
+
+      <--uptrack,              <--along-track-->           downtrack,-->
+       -X, opposite             parallel to S/C            +X, with S/C
+       to S/C velocity           S/C velocity              velocity
 
 
     * TCA => Time of Closest Approach, of spacecraft to Pnom
@@ -38,46 +70,45 @@
     Input parameters (constants)
     ----------------------------
 
-    dThDtTDI  TMR:  desired scan rate of actual body across FOV, rad/s
-              - A positive value means that the CB3 moves downtrack with
-                respect to Pnom, even as Theta may decrease or increase,
-                with increasing time
+    dThDtTDI  TMR, sequenced scan rate of target wrt boresight, rad/s*
     deltaY    Flyby (Fb) distance, km
     vFb       Speed of flyby, km/s, should be non-negative
-    DelT      Integration timestep, s; defaults to 1s if not present
+    DelT      Integration timestep, s
+
+    * A positive value for dThDtTDI has CB3 moving downtrack wrt Pnom
 
 
     Initial conditions
     ------------------
 
-    xEll_km     Extent of ellipse to be covered wrt nominal target, km
+    xEll_km     Extent of along-track to be covered wrt Pnom, km
                 - If one value specified:  -|xEll_km| to +|xEll_km|
                 - If two values specified:  min(xEll_km) to max(xEll_km)
-                   - positive implies => +X => direction of S/C velocity
+                   - positive implies +X i.e. downtrack
                 - This procedure integrates the CB3 position between
                   these two values at a minimum
 
 
-    xEll_s      IFF xEll_km not specified, extent of ellipse
+    xEll_s      IFF xEll_km not specified, extent of along-track covered
                 wrt nominal target, s past CA (t - TCA) at vFb
                 - default: 150s
                 - same scheme as xEll_km for one or two values
                 - same scheme as xEll_km for one or two values
-                  - positive implies => +X => direction of S/C velocity
+                  - positive implies +X i.e. downtrack
 
     xCb3_0_km   Initial CB3 position wrt nominal target, km
-                - positive implies => +X => direction of S/C velocity
+                - positive implies +X => downtrack
     xCb3_0_s    IFF xCb3_0_km not specified, initial CB3 position
                 wrt nominal target, s past CA (CB3t0 - TCA) at vFb
                 - default:  0s
-                - positive implies => +X => direction of S/C velocity
+                - positive implies +X => downtrack
 
     xSc0_km     Initial S/C position wrt nominal target, km
-                - positive implies => +X => direction of S/C velocity
+                - positive implies +X => downtrack
     xSc0_s      IFF xSc0_km not specified, initial S/C position
                 wrt nominal target, s past CA (SCt0 - TCA) at vFb
                 - default:  0s
-                - positive implies => +X => direction of S/C velocity
+                - positive implies +X => downtrack
 
 
     ////////////////////////////////////////////////////////////////////////
@@ -106,38 +137,42 @@
     Derivation of dPdT function
     ===========================
 
-    Refer to the diagram above.
+    Refer to the Backgound and diagram above.
 
-    A spacecraft (S/C) is flying by an object (i.e. Pluto) with a
-    position uncertainty ellipsoid that is shaped like a cigar with its
-    long axis along the flyby velocity vector.  It is desired to scan an
-    instrument boresight along the long axis of the uncertainty
-    ellipsoid such that, whereever the  object is, when the scan passes
-    over it, the object moves across the FOV at a fixed angular rate,
-    typically the scan rate of a Time Delay  Integration (TDI) CCD
-    converted via the optics geometry to radian/s.
+    The instantaneous angular (scan) rate of a target across such a S/C
+    instrument's boresight, with said target fixed at position
+    [Pnom + CB3(t)] at any time t, is
 
-    The scan rate across a S/C instrument's FOV of an object
-    at [Pnom + CB3(t)] is
-
-      dThDtTDI = dThDt + dThDtFb                                     [1]
+      dThDtTDI = dThDt + dThDtFb   (radian/second; rad/s)           [1]
 
     where
 
-      Pnom     = Nominal target position = inertial frame origin
-      CB3(t)   = Time-dependent offset from Pnom along X, vector [P(t),0,0]
-      dThDtTDI = Desired scan rate, constant, rad/s
-      Theta(t) = Inertial angle of boresight, +Y=0, +X positive, radians
-      dThDt    = dTheta / dt, inertial angular rate of Theta, rad/s
-      dThDtFb  = Instantaneous scan rate of a fixed target at CB3(t) wrt
-                   FOV due to S/C-target translational motion, rad/s
+      Pnom     = Nominal target position = inertial frame origin, constant
+      CB3(t)   = Time-dependent pseudo-body* offset from Pnom along X, km
+      dThDtTDI = Desired (sequenced) scan rate, constant, converted to rad/s
+      Theta(t) = Boresight angle wrt inertial +Y, positive toward +X, radian
+      dThDt    = dTheta / dt, inertial angular rate of Theta(t), rad/s
+      dThDtFb  = Instantaneous angular rotation rate of a line from [the
+                   fixed target at CB3(t)] to [the spacecraft] due to
+                   S/C-target relative translational motion, radian/second
+
+    * The to-be-solved-for pseudo-body position model, CB3(t), does not
+      represent a real target; it is instead a synthetic trajectory loaded
+      into the S/C GN&C** subsystem, and to which GN&C will point the
+      instrument boresight during the observation scan.  The CB3(t) pseudo-
+      body trajectory will at some point during the scan pass through the
+      the real target position, which position is at an unknown but fixed
+      offset from Pnom.  The goal of this exercise is to solve for (derive)
+      that CB3(t) trajectory model.
+
+    ** Guidance, Navigation and Control)
 
     Since Theta(t) is by definition the instantaneous angle of the
     boresight pointing at any actual fixed target at CB3(t) from S/C(t),
     the scan rate contribution of that fixed target across the boresight
     due to relative translational motion is the ratio of [the motion of
-    the fixed object perpendicular to the boresight] to [the range
-    between the S/C and the fixed object]:
+    the fixed target perpendicular to the boresight] to [the range
+    between the S/C and the fixed target]:
 
                 vFb * cos(Theta)                 2
      dThDtFb = ---------------------- = vFb * cos (Theta) / deltaY   [2]
@@ -150,7 +185,7 @@
      dThDt = dThDtTDI  -  vFb * cos (Theta) / deltaY                 [3]
 
     The distance along the flyby direction (+X) between the spacecraft
-    and the object can be derived from two formulae:
+    and the target can be derived from two formulae:
 
      deltaX = P(t)  -  vFb * t                                       [4]
      deltaX = deltaY * tan(Theta)                                    [5]
@@ -216,7 +251,7 @@
 
     ////////////////////////////////////////////////////////////////////////
     Final note:
-    When the range to the object is large and/or the flyby distance
+    When the range to the target is large and/or the flyby distance
     (deltaY) is large compared to the distance the S/C moves during the
     scan, dThDtFb is essentially constant, and this derivation is not
     relevant.
