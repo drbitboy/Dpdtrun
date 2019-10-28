@@ -35,26 +35,28 @@
     sequenced value.
 
 
-                                              |         |          |
-                                          --->|deltaX(t)|<---      |
-                                              |         |          |
-                                              |     --->|   P(t)   |<---
-                                              |         |          |
-                                              |         |          |
-      ----------------------------------------|---------CB3(t)-----Pnom
-        ^           +Y                        |        /
-        |           ^                         |       /
-        |           |                         |      /<=Boresight line,
-        |           | Inertial                |     /    pointing from
-      deltaY        | Reference               |    /      S/C toward CB3
-        |           | Frame                   |   /
-        |          -+----------->+X         ->|  /<-Theta, positive
-        |           |                         | /    wrt +Y toward +X
-        V                                     |/
-      ----------------------------------------Sc(t)====>--------------
-                                                      ^
-                                                      |
-                           Flyby velocity vector, V --+  ||V|| = vFb
+                                             |          |         |
+                                         --->|deltaX(t) |<---     |
+                                             |          |         |
+                                             |      --->|  P(t)   |<---
+                                             |          |         |
+                                             |          |         |
+      ---------------------------------------|----------CB3-------Pnom
+        ^           +Y                       |         /     -X<--|-->+X
+        |           ^                        |        /          X=0
+        |           |                        |       /
+        |           |                        |      /<=Boresight line,
+        |           | Inertial               |     /    pointing from
+      deltaY        | Reference              |    /      S/C toward CB3
+        |           | Frame                  |   /
+        |          -+----------->+X        ->|  /<-Theta, positive
+        |           |                        | /    wrt +Y toward +X
+        V                                    |/
+      ---------------------------------------Sc(t)====>-----------+--
+                                                     ^            |
+                                                     |           X=0
+                                                     |
+                          Flyby velocity vector, V --+  ||V|| = vFb
 
     Jargon
     ------
@@ -135,7 +137,7 @@
     Derivation of dPdT function
     ===========================
 
-    Refer to the Backgound and diagram above.
+    Refer to the Background and diagram above.
 
     The instantaneous angular (scan) rate of a target across such a S/C
     instrument's boresight, with said target fixed at position
