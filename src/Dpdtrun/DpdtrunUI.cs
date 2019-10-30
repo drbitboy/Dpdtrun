@@ -372,93 +372,8 @@ namespace DpdtrunUI
                 }
                 Setlims(xmn, xmx, true);
 
-                // Plot log base 1000 of absolute differences between analytical and RK solutions
-                List<double> cb3absdiffs = Zipabsdiff(listlist[1], listlist[2]).ToList();
-
-                // - Find maximum difference
-                double cb3absdiffmx = cb3absdiffs[0];
-                foreach (double val in cb3absdiffs)
-                {
-                    if (val > cb3absdiffmx) cb3absdiffmx = val;
-                }
-
-                List<Label> labels = new List<Label>
-                    {
-                        F1.diff_yoctom_lbl
-                        , F1.diff_zetam_lbl
-                        , F1.diff_attom_lbl
-                        , F1.diff_femtom_lbl
-                        , F1.diff_picom_lbl
-                        , F1.diff_nanom_lbl
-                        , F1.diff_microm_lbl
-                        , F1.diff_millim_lbl
-                        , F1.diff_m_lbl
-                        , F1.diff_km_lbl
-                        , F1.diff_megam_lbl
-                        , F1.diff_gigam_lbl
-                    };
-
-                // - Plot differences only if some are non-zero
-                if (cb3absdiffmx == 0d)
-                {
-                    F1.diffs_lbl.Visible = false;
-                    foreach (Label lbl in labels) lbl.Visible = false;
-                }
-                else
-                {
-                    // - Find minimum difference
-                    double cb3absdiffmn = cb3absdiffmx;
-                    foreach (double val in cb3absdiffs)
-                    {
-                        if (0d < val && val < cb3absdiffmn) cb3absdiffmn = val;
-                    }
-
-                    // - Set limits as log base 1000
-                    double log1k = Math.Log(1000d);
-                    double lolim = Math.Floor(Math.Log(cb3absdiffmn) / log1k) - 1;
-                    double hilim = Math.Ceiling(Math.Log(cb3absdiffmx) / log1k);
-
-                    // - Differences that are zero will be a very low logarithm
-                    double zerolim = (2d * (lolim - 0.5)) - (hilim + 0.5);
-
-                    // - Convert differences to log values
-                    List<double> log1kdiffs = new List<double>(cb3absdiffs.Count);
-                    foreach (double val in cb3absdiffs) log1kdiffs.Add(val > 0 ? (Math.Log(val) / log1k) : zerolim);
-                    
-                    // - Set ordinate to log limits
-                    Setlims(lolim - 0.5, hilim + 0.5, false);
-
-                    // Make visible and locate the right ordinate axis title
-                    F1.diffs_lbl.Visible = true;
-                    F1.diffs_lbl.Location = new Point(F1.diffs_lbl.Location.X
-                                                     , (Ytop + Ybot - F1.diffs_lbl.Size.Height) / 2
-                                                     );
-
-                    // Make visible and locate the right ordinate labels
-                    foreach (Label lbl in labels)
-                    {
-                        try
-                        {
-                            double tag = Convert.ToDouble(lbl.Tag);
-                            if (tag < lolim || tag > hilim) throw new Exception("ignore");
-                            lbl.Location = new Point(lbl.Location.X, Yscaler.D2p(tag));
-                            lbl.Visible = true;
-                        }
-                        catch
-                        {
-                            lbl.Visible = false;
-                        }
-                    }
-
-                    // Plot the differences between the analytical and Runge-Kutta solutions
-                    Spots(listlist[0], log1kdiffs, F1brushdiffs, 3);
-
-                } // if (cb3absdiffmx == 0d) ... else
-
-
-
-                    // Set ordinate limits in km
-                    double ymx = listlist[1][0];
+                // Set ordinate limits in km
+                double ymx = listlist[1][0];
                 double ymn = ymx;
                 foreach (List<double> ylist in listlist.GetRange(1,2))
                 {
@@ -537,6 +452,93 @@ namespace DpdtrunUI
                 // Ensure X and Y labels are visible
                 F1.cb3_posn_lbl.Visible = true;
                 F1.sc_posn_lbl.Visible = true;
+
+
+
+                ////////////////////////////////////////////////////////////
+                // Plot log base 1000 of absolute differences between
+                // analytical and RK solutions
+                List<double> cb3absdiffs = Zipabsdiff(listlist[1], listlist[2]).ToList();
+
+                // - Find maximum difference
+                double cb3absdiffmx = cb3absdiffs[0];
+                foreach (double val in cb3absdiffs)
+                {
+                    if (val > cb3absdiffmx) cb3absdiffmx = val;
+                }
+
+                List<Label> labels = new List<Label>
+                    {
+                        F1.diff_yoctom_lbl
+                        , F1.diff_zetam_lbl
+                        , F1.diff_attom_lbl
+                        , F1.diff_femtom_lbl
+                        , F1.diff_picom_lbl
+                        , F1.diff_nanom_lbl
+                        , F1.diff_microm_lbl
+                        , F1.diff_millim_lbl
+                        , F1.diff_m_lbl
+                        , F1.diff_km_lbl
+                        , F1.diff_megam_lbl
+                        , F1.diff_gigam_lbl
+                    };
+
+                // - Plot differences only if some are non-zero
+                if (cb3absdiffmx == 0d)
+                {
+                    F1.diffs_lbl.Visible = false;
+                    foreach (Label lbl in labels) lbl.Visible = false;
+                }
+                else
+                {
+                    // - Find minimum difference
+                    double cb3absdiffmn = cb3absdiffmx;
+                    foreach (double val in cb3absdiffs)
+                    {
+                        if (0d < val && val < cb3absdiffmn) cb3absdiffmn = val;
+                    }
+
+                    // - Set limits as log base 1000
+                    double log1k = Math.Log(1000d);
+                    double lolim = Math.Floor(Math.Log(cb3absdiffmn) / log1k) - 1;
+                    double hilim = Math.Ceiling(Math.Log(cb3absdiffmx) / log1k);
+
+                    // - Differences that are zero will be a very low logarithm
+                    double zerolim = (2d * (lolim - 0.5)) - (hilim + 0.5);
+
+                    // - Convert differences to log values
+                    List<double> log1kdiffs = new List<double>(cb3absdiffs.Count);
+                    foreach (double val in cb3absdiffs) log1kdiffs.Add(val > 0 ? (Math.Log(val) / log1k) : zerolim);
+
+                    // - Set ordinate to log limits
+                    Setlims(lolim - 0.5, hilim + 0.5, false);
+
+                    // Make visible and locate the right ordinate axis title
+                    F1.diffs_lbl.Visible = true;
+                    F1.diffs_lbl.Location = new Point(F1.diffs_lbl.Location.X
+                                                     , (Ytop + Ybot - F1.diffs_lbl.Size.Height) / 2
+                                                     );
+
+                    // Make visible and locate the right ordinate labels
+                    foreach (Label lbl in labels)
+                    {
+                        try
+                        {
+                            double tag = Convert.ToDouble(lbl.Tag);
+                            if (tag < lolim || tag > hilim) throw new Exception("ignore");
+                            lbl.Location = new Point(lbl.Location.X, Yscaler.D2p(tag));
+                            lbl.Visible = true;
+                        }
+                        catch
+                        {
+                            lbl.Visible = false;
+                        }
+                    }
+
+                    // Plot the differences between the analytical and Runge-Kutta solutions
+                    Spots(listlist[0], log1kdiffs, F1brushdiffs, 3);
+
+                } // if (cb3absdiffmx == 0d) ... else
             }
         }
 
