@@ -230,12 +230,14 @@ namespace DpdtrunUI
         {
             private double Low_data { set; get; }
             private double Low_plot { set; get; }
+            private double High_plot { set; get; }
             private double Range_ratio { set; get; }
 
             public Scaler(double lodata, double hidata, double loplot, double hiplot)
             {
                 Low_data = lodata;
                 Low_plot = loplot;
+                High_plot = hiplot;
                 Range_ratio = (hiplot - loplot) / (hidata - lodata);
             }
 
@@ -246,6 +248,11 @@ namespace DpdtrunUI
             /// <returns>Plot position equivalent to data value</returns>
             public int D2p(double val)
             {
+                if (Double.IsInfinity(val))
+                {
+                    if ((val > 0d && Range_ratio > 0d) || (val < 0d && Range_ratio < 0d)) return Convert.ToInt32(High_plot);
+                    else return Convert.ToInt32(Low_plot);
+                }
                 return Convert.ToInt32(Math.Round(Low_plot + (Range_ratio * (val - Low_data)), 0));
             }
         }
@@ -353,6 +360,7 @@ namespace DpdtrunUI
                 while (enuman.MoveNext())
                 {
                     enumrk.MoveNext();
+                    if (Double.IsInfinity(enuman.Current) || Double.IsInfinity(enumrk.Current)) yield return 0d;
                     yield return Math.Abs(enuman.Current - enumrk.Current);
                 }
             }
@@ -379,6 +387,7 @@ namespace DpdtrunUI
                 {
                     foreach (double val in ylist)
                     {
+                        if (Double.IsInfinity(val)) continue;
                         if (val > ymx) ymx = val;
                         else if (val < ymn) ymn = val;
                     }
@@ -432,7 +441,7 @@ namespace DpdtrunUI
                 F1.ylo_lbl.Visible = true;
 
                 F1.yhi_lbl.Text = String.Format("{0}s|{1}km"
-                                               , Convert.ToInt32(Math.Round(ymx / F1.Dpdtrun.Vfb, 0))
+                                               , Math.Round(ymx / F1.Dpdtrun.Vfb, 0)
                                                , Math.Round(ymx, 0)
                                                );
                 F1.yhi_lbl.Visible = true;
@@ -508,7 +517,10 @@ namespace DpdtrunUI
 
                     // - Convert differences to log values
                     List<double> log1kdiffs = new List<double>(cb3absdiffs.Count);
-                    foreach (double val in cb3absdiffs) log1kdiffs.Add(val > 0 ? (Math.Log(val) / log1k) : zerolim);
+                    foreach (double val in cb3absdiffs)
+                    {
+                        log1kdiffs.Add((val > 0 && !Double.IsInfinity(val)) ? (Math.Log(val) / log1k) : zerolim);
+                    }
 
                     // - Set ordinate to log limits
                     Setlims(lolim - 0.5, hilim + 0.5, false);
