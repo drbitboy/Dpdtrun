@@ -81,6 +81,8 @@ namespace DpdtrunUI
             this.cb3_posn_lbl = new System.Windows.Forms.Label();
             this.tca_lbl = new System.Windows.Forms.Label();
             this.pnom_lbl = new System.Windows.Forms.Label();
+            this.cb3_init_lbl = new System.Windows.Forms.Label();
+            this.sc_init_lbl = new System.Windows.Forms.Label();
             dpdtrun_diagram = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -599,6 +601,32 @@ namespace DpdtrunUI
             this.pnom_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.pnom_lbl.Visible = false;
             // 
+            // cb3_init_lbl
+            // 
+            this.cb3_init_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cb3_init_lbl.AutoSize = true;
+            this.cb3_init_lbl.ForeColor = System.Drawing.Color.LightSkyBlue;
+            this.cb3_init_lbl.Location = new System.Drawing.Point(120, 419);
+            this.cb3_init_lbl.Name = "cb3_init_lbl";
+            this.cb3_init_lbl.Size = new System.Drawing.Size(44, 13);
+            this.cb3_init_lbl.TabIndex = 1215;
+            this.cb3_init_lbl.Text = "CB3 Init";
+            this.cb3_init_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.cb3_init_lbl.Visible = false;
+            // 
+            // sc_init_lbl
+            // 
+            this.sc_init_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.sc_init_lbl.AutoSize = true;
+            this.sc_init_lbl.ForeColor = System.Drawing.Color.LightSkyBlue;
+            this.sc_init_lbl.Location = new System.Drawing.Point(551, 562);
+            this.sc_init_lbl.Name = "sc_init_lbl";
+            this.sc_init_lbl.Size = new System.Drawing.Size(38, 13);
+            this.sc_init_lbl.TabIndex = 1216;
+            this.sc_init_lbl.Text = "SC Init";
+            this.sc_init_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.sc_init_lbl.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -606,6 +634,8 @@ namespace DpdtrunUI
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(845, 622);
+            this.Controls.Add(this.sc_init_lbl);
+            this.Controls.Add(this.cb3_init_lbl);
             this.Controls.Add(this.pnom_lbl);
             this.Controls.Add(this.tca_lbl);
             this.Controls.Add(this.cb3_posn_lbl);
@@ -717,6 +747,8 @@ namespace DpdtrunUI
         private Label cb3_posn_lbl;
         private Label tca_lbl;
         private Label pnom_lbl;
+        private Label cb3_init_lbl;
+        private Label sc_init_lbl;
     }
 }
 

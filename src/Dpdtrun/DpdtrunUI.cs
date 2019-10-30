@@ -270,6 +270,7 @@ namespace DpdtrunUI
             private System.Drawing.SolidBrush F1brushlty;  // LightYellow
             private System.Drawing.Pen F1penblk;
             private System.Drawing.Pen F1penwht;
+            private System.Drawing.Pen F1peninitlines;
 
 
             /// <summary>
@@ -290,6 +291,7 @@ namespace DpdtrunUI
                 F1brushlty = new System.Drawing.SolidBrush(System.Drawing.Color.LightYellow);
                 F1penblk = new System.Drawing.Pen(Color.Black, 2);
                 F1penwht = new System.Drawing.Pen(Color.White, 2);
+                F1peninitlines = new System.Drawing.Pen(F1.cb3_init_lbl.ForeColor);
             }
 
             ~Plot_surface()
@@ -298,6 +300,7 @@ namespace DpdtrunUI
                 if (!(F1brushlty is null)) F1brushlty.Dispose();
                 if (!(F1penblk is null)) F1penblk.Dispose();
                 if (!(F1penwht is null)) F1penwht.Dispose();
+                if (!(F1peninitlines is null)) F1peninitlines.Dispose();
                 if (!(F1g is null)) F1g.Dispose();
             }
 
@@ -336,11 +339,13 @@ namespace DpdtrunUI
             }
             public void Vline(double x, Pen pen)
             {
-                F1g.DrawLine(pen, Xscaler.D2p(x), Ybot, Xscaler.D2p(x), Ytop);
+                int ix;
+                F1g.DrawLine(pen, ix=Xscaler.D2p(x), Ybot, Xscaler.D2p(x), Ytop);
             }
 
             public void Do_plot(List<List<double>>listlist)
             {
+                // Set X limits in seconds
                 double xmx = listlist[0][0];
                 double xmn = xmx;
                 foreach (double val in listlist[0])
@@ -349,6 +354,8 @@ namespace DpdtrunUI
                     else if (val < xmn) xmn = val;
                 }
                 Setlims(xmn, xmx, true);
+
+                // Set Y limits in km
                 double ymx = listlist[1][0];
                 double ymn = ymx;
                 foreach (List<double> ylist in listlist)
@@ -364,6 +371,18 @@ namespace DpdtrunUI
                 Clear();
                 DrawRectangle();
 
+                // Horizontal line at CB3 initial position
+                Hline(F1.Dpdtrun.X_cb3_init, F1peninitlines);
+                F1.cb3_init_lbl.Location = new Point(F1.cb3_init_lbl.Location.X, Yscaler.D2p(F1.Dpdtrun.X_cb3_init) + 3);
+                F1.cb3_init_lbl.Visible = true;
+
+                // Vertical line at S/C initial position; convert km to seconds first
+                double Sc_init_s = F1.Dpdtrun.Sc_init / F1.Dpdtrun.Vfb;
+                Vline(Sc_init_s, F1peninitlines);
+                F1.sc_init_lbl.Location = new Point(Xscaler.D2p(Sc_init_s) + 3, F1.sc_init_lbl.Location.Y);
+                F1.sc_init_lbl.Visible = true;
+
+                // Vertical line at zero (t-TCA = 0)
                 if (xmn < 0 && 0 < xmx)
                 {
                     Vline(0, F1penwht);
@@ -375,6 +394,7 @@ namespace DpdtrunUI
                     F1.tca_lbl.Visible = false;
                 }
 
+                // Horizontal line at zero (P(t) = Pnom = 0)
                 if (ymn < 0 && 0 < ymx)
                 {
                     Hline(0, F1penwht);
@@ -386,9 +406,11 @@ namespace DpdtrunUI
                     F1.pnom_lbl.Visible = false;
                 }
 
+                // Plot analytical (listlist[1]) and Rk4 (listlist[2]) solutions
                 Spots(listlist[0], listlist[1], F1brushblk, 18);
                 Spots(listlist[0], listlist[2], F1brushlty, 8);
 
+                // Plot limits:  Y min; Y max; X min; X max
                 F1.ylo_lbl.Text = String.Format("{0}s|{1}km"
                                                , Convert.ToInt32(Math.Round(ymn / F1.Dpdtrun.Vfb, 0))
                                                , Math.Round(ymn, 0)
@@ -413,9 +435,9 @@ namespace DpdtrunUI
                                                );
                 F1.xhi_lbl.Visible = true;
 
-                F1.sc_posn_lbl.Visible = true;
+                // Ensure X and Y labels are visible
                 F1.cb3_posn_lbl.Visible = true;
-
+                F1.sc_posn_lbl.Visible = true;
             }
         }
 
