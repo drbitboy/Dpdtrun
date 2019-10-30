@@ -114,7 +114,7 @@
 
     ////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////
-    FUNCTION DPDT
+    FUNCTION dydx
     =============
 
     Derivative function to support DPDTRUN:  used to calculate dy/dx
@@ -166,7 +166,7 @@
       offset from Pnom.  The goal of this exercise is to solve for (derive)
       that CB3(t) trajectory model.
 
-    ** Guidance, Navigation and Control)
+    ** Guidance, Navigation and Control
 
     Since Theta(t) is by definition the instantaneous angle of the
     boresight pointing at any actual fixed target at CB3(t) from S/C(t),
@@ -296,6 +296,7 @@
                    1        / tan(Theta) - broot \
      b^2 > 1:  --------- ln( ------------------   ) = dThDtTDI * t + C  [12a]
                2 * broot    \ tan(Theta) + broot /
+                                                      (See also Note 2 below)
 
 
                  1      -1 / tan(Theta) \
@@ -317,6 +318,13 @@
              376 and the is essentially identical to 375 where 375 covers the
              case where dThDtTDI is negative.
 
+    Note 2:  In equation [12a], it is possible that broot is greater
+             than tan(Theta), which results in a negative numerator
+             and a negative value passed to the natural logarithm
+             function.  In that case this approach fails, because the
+             constant of integration cannot be calculated.
+
+
     Substituting
 
      deltaX/deltaY = tan(Theta)
@@ -333,36 +341,6 @@
     b^2 < 1:  deltaX = deltaY * broot * tan(broot*T) + 1 )           [13b]
 
     b^2 < 1:  deltaX = - deltaY / T                                  [13c]
-
-    ////////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////*/
-
-    public double deltaXSolved(t) {
-
-        //////////////////////////////////
-        // - Calculate solution
-
-        kTplusC = (dThDtTDI * t) + constint;
-
-        //////////////////////////////////
-        // Equation [13a]:  b^2 > 1
-
-        if (b2 > 1d0) {
-          exp2BT = Math.exp(2d0 * broot * kTplusC);
-          return deltaY * ( broot * (1d0 + exp2BT) ) / (1d0 - exp2BT);
-        }
-
-        //////////////////////////////////
-        // Equation [13b]:  b^2 < 1
-
-        if (b2 < 1d0) return deltaY * broot * Math.tan(broot * kTplusC);
-
-        //////////////////////////////////
-        // Equation [13c]:  b^2 = 1
-
-        return - deltaY / kTplusC;
-    }
-
 
     ////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////*/
