@@ -196,19 +196,19 @@ namespace DpdtrunUI
         /// <param name="e">Unused</param>
         private void inputs_lbl_DoubleClick(object sender, EventArgs e)
         {
-            tmr_tb.Text = "427";              // Microradian/s
-            deltay_tb.Text = "3000";          // Miss distance, km
-            vfb_tb.Text = "14.43";            // km/s
-            delt_tb.Text = "1";               // Integration time step, s
+            tmr_tb.Text = "3000";              // Microradian/s
+            deltay_tb.Text = "2000";           // Miss distance, km
+            vfb_tb.Text = "14";                // km/s
+            delt_tb.Text = "1";                // Integration time step, s
             
-            x_cb3_init_tb.Text = "0";         // CB3 offset wrt Pnom, km
+            x_cb3_init_tb.Text = "0";          // CB3 offset wrt Pnom, km
 
-            sc_init_s_rb.Checked = true;      // S/C offset units will be [s past TCA]
-            sc_init_tb.Text = "-300";         // S/C offset wrt Pnom, s past TCA
+            sc_init_s_rb.Checked = true;       // S/C offset units will be [s past TCA]
+            sc_init_tb.Text = "-200";          // S/C offset wrt Pnom, s past TCA
 
-            xcb3_s_rb.Checked = true;         // Along track coverage units will be [equivlaent s past TCA]
-            xcb3_limit_left_tb.Text = "-96";  // Uptrack coverage limit, s past TCA
-            xcb3_limit_right_tb.Text = "96";  // Downtrack coverage limit, s past TCA
+            xcb3_s_rb.Checked = true;          // Along track coverage units will be [equivlaent s past TCA]
+            xcb3_limit_left_tb.Text = "-600";  // Uptrack coverage limit, s past TCA
+            xcb3_limit_right_tb.Text = "600";  // Downtrack coverage limit, s past TCA
         }
 
         /// <summary>
@@ -387,7 +387,7 @@ namespace DpdtrunUI
                 }
 
                 Spots(listlist[0], listlist[1], F1brushblk, 18);
-                Spots(listlist[0], listlist[2], F1brushlty, 10);
+                Spots(listlist[0], listlist[2], F1brushlty, 8);
 
                 F1.ylo_lbl.Text = String.Format("{0}s|{1}km"
                                                , Convert.ToInt32(Math.Round(ymn / F1.Dpdtrun.Vfb, 0))
