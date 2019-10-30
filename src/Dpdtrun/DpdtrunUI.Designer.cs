@@ -389,11 +389,10 @@ namespace DpdtrunUI
             // log_lbl
             // 
             this.log_lbl.AutoSize = true;
-            this.log_lbl.Location = new System.Drawing.Point(9, 257);
+            this.log_lbl.Location = new System.Drawing.Point(4, 253);
             this.log_lbl.Margin = new System.Windows.Forms.Padding(0);
             this.log_lbl.Name = "log_lbl";
-            this.log_lbl.Padding = new System.Windows.Forms.Padding(4);
-            this.log_lbl.Size = new System.Drawing.Size(8, 21);
+            this.log_lbl.Size = new System.Drawing.Size(0, 13);
             this.log_lbl.TabIndex = 29;
             this.log_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.log_lbl.Click += new System.EventHandler(this.log_lbl_Click);
@@ -475,7 +474,7 @@ namespace DpdtrunUI
             // 
             this.flowLayoutPanel1.BackgroundImage = global::Dpdtrun.Properties.Resources.dpdt_formula;
             this.flowLayoutPanel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(101, 248);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(112, 248);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(253, 62);
             this.flowLayoutPanel1.TabIndex = 1203;
