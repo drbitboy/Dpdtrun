@@ -344,3 +344,12 @@
 
     ////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////*/
+
+    Acknowledgement:  this problem was brought to me by Ann Harch while
+    we were working together on the New Horizons mission.  The
+    spacecraft had an on-board algorithm to compensate for translational
+    motion during a scan of the RALPH/MVIC instrument, but that
+    algorithm did not account for significant changes in the range from
+    spacecraft to target.  Others, such as Gabe Rogers and the late,
+    great Gene Heyler also solved this problem by coding an Euler-style
+    ODE solver.
