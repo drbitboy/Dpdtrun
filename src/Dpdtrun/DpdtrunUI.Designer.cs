@@ -474,7 +474,7 @@ namespace DpdtrunUI
             // 
             this.flowLayoutPanel1.BackgroundImage = global::Dpdtrun.Properties.Resources.dpdt_formula;
             this.flowLayoutPanel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(112, 248);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(107, 248);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(253, 62);
             this.flowLayoutPanel1.TabIndex = 1203;
@@ -528,7 +528,7 @@ namespace DpdtrunUI
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(354, 301);
+            this.label2.Location = new System.Drawing.Point(368, 301);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(136, 20);
             this.label2.TabIndex = 1208;
