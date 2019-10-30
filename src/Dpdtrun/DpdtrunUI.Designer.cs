@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
 using System.Drawing;
 
-namespace Dpdtrun
+namespace DpdtrunUI
 {
     partial class Form1
     {
@@ -70,6 +70,17 @@ namespace Dpdtrun
             this.bottom_right_gb = new System.Windows.Forms.GroupBox();
             this.top_left_gb = new System.Windows.Forms.GroupBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.constint_nan_lbl = new System.Windows.Forms.Label();
+            this.ylo_lbl = new System.Windows.Forms.Label();
+            this.yhi_lbl = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.xlo_lbl = new System.Windows.Forms.Label();
+            this.xhi_lbl = new System.Windows.Forms.Label();
+            this.sc_posn_lbl = new System.Windows.Forms.Label();
+            this.cb3_posn_lbl = new System.Windows.Forms.Label();
+            this.tca_lbl = new System.Windows.Forms.Label();
+            this.pnom_lbl = new System.Windows.Forms.Label();
             dpdtrun_diagram = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -288,9 +299,11 @@ namespace Dpdtrun
             // xcb3_s_rb
             // 
             this.xcb3_s_rb.AutoSize = true;
+            this.xcb3_s_rb.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xcb3_s_rb.ForeColor = System.Drawing.Color.Blue;
             this.xcb3_s_rb.Location = new System.Drawing.Point(51, 9);
             this.xcb3_s_rb.Name = "xcb3_s_rb";
-            this.xcb3_s_rb.Size = new System.Drawing.Size(30, 17);
+            this.xcb3_s_rb.Size = new System.Drawing.Size(31, 17);
             this.xcb3_s_rb.TabIndex = 1;
             this.xcb3_s_rb.Text = "s";
             this.xcb3_s_rb.UseVisualStyleBackColor = true;
@@ -320,9 +333,11 @@ namespace Dpdtrun
             // sc_init_s_rb
             // 
             this.sc_init_s_rb.AutoSize = true;
+            this.sc_init_s_rb.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sc_init_s_rb.ForeColor = System.Drawing.Color.Blue;
             this.sc_init_s_rb.Location = new System.Drawing.Point(51, 9);
             this.sc_init_s_rb.Name = "sc_init_s_rb";
-            this.sc_init_s_rb.Size = new System.Drawing.Size(30, 17);
+            this.sc_init_s_rb.Size = new System.Drawing.Size(31, 17);
             this.sc_init_s_rb.TabIndex = 1;
             this.sc_init_s_rb.Text = "s";
             this.sc_init_s_rb.UseVisualStyleBackColor = true;
@@ -398,9 +413,11 @@ namespace Dpdtrun
             // xcb3_init_s_rb
             // 
             this.xcb3_init_s_rb.AutoSize = true;
+            this.xcb3_init_s_rb.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.xcb3_init_s_rb.ForeColor = System.Drawing.Color.Blue;
             this.xcb3_init_s_rb.Location = new System.Drawing.Point(51, 9);
             this.xcb3_init_s_rb.Name = "xcb3_init_s_rb";
-            this.xcb3_init_s_rb.Size = new System.Drawing.Size(30, 17);
+            this.xcb3_init_s_rb.Size = new System.Drawing.Size(31, 17);
             this.xcb3_init_s_rb.TabIndex = 1;
             this.xcb3_init_s_rb.Text = "s";
             this.xcb3_init_s_rb.UseVisualStyleBackColor = true;
@@ -420,9 +437,9 @@ namespace Dpdtrun
             // bottom_right_gb
             // 
             this.bottom_right_gb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bottom_right_gb.Location = new System.Drawing.Point(810, 604);
+            this.bottom_right_gb.Location = new System.Drawing.Point(778, 593);
             this.bottom_right_gb.Name = "bottom_right_gb";
-            this.bottom_right_gb.Size = new System.Drawing.Size(35, 20);
+            this.bottom_right_gb.Size = new System.Drawing.Size(67, 31);
             this.bottom_right_gb.TabIndex = 1201;
             this.bottom_right_gb.TabStop = false;
             this.bottom_right_gb.Visible = false;
@@ -434,7 +451,7 @@ namespace Dpdtrun
             this.top_left_gb.Margin = new System.Windows.Forms.Padding(0);
             this.top_left_gb.Name = "top_left_gb";
             this.top_left_gb.Padding = new System.Windows.Forms.Padding(0);
-            this.top_left_gb.Size = new System.Drawing.Size(30, 24);
+            this.top_left_gb.Size = new System.Drawing.Size(77, 24);
             this.top_left_gb.TabIndex = 1202;
             this.top_left_gb.TabStop = false;
             this.top_left_gb.Visible = false;
@@ -443,18 +460,163 @@ namespace Dpdtrun
             // 
             this.flowLayoutPanel1.BackgroundImage = global::Dpdtrun.Properties.Resources.dpdt_formula;
             this.flowLayoutPanel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(102, 248);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(101, 248);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(257, 62);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(253, 62);
             this.flowLayoutPanel1.TabIndex = 1203;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Blue;
+            this.label1.Location = new System.Drawing.Point(295, 214);
+            this.label1.Margin = new System.Windows.Forms.Padding(0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(72, 26);
+            this.label1.TabIndex = 1204;
+            this.label1.Text = "s:  seconds\r\npast TCA";
+            // 
+            // constint_nan_lbl
+            // 
+            this.constint_nan_lbl.AutoSize = true;
+            this.constint_nan_lbl.Location = new System.Drawing.Point(361, 298);
+            this.constint_nan_lbl.Margin = new System.Windows.Forms.Padding(0);
+            this.constint_nan_lbl.Name = "constint_nan_lbl";
+            this.constint_nan_lbl.Padding = new System.Windows.Forms.Padding(4);
+            this.constint_nan_lbl.Size = new System.Drawing.Size(8, 21);
+            this.constint_nan_lbl.TabIndex = 1205;
+            this.constint_nan_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // ylo_lbl
+            // 
+            this.ylo_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ylo_lbl.Location = new System.Drawing.Point(-57, 583);
+            this.ylo_lbl.Name = "ylo_lbl";
+            this.ylo_lbl.Size = new System.Drawing.Size(136, 20);
+            this.ylo_lbl.TabIndex = 1206;
+            this.ylo_lbl.Text = "ylo";
+            this.ylo_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.ylo_lbl.UseMnemonic = false;
+            this.ylo_lbl.Visible = false;
+            // 
+            // yhi_lbl
+            // 
+            this.yhi_lbl.Location = new System.Drawing.Point(-54, 352);
+            this.yhi_lbl.Name = "yhi_lbl";
+            this.yhi_lbl.Size = new System.Drawing.Size(133, 21);
+            this.yhi_lbl.TabIndex = 1207;
+            this.yhi_lbl.Text = "yhi";
+            this.yhi_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.yhi_lbl.Visible = false;
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(354, 301);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(136, 20);
+            this.label2.TabIndex = 1208;
+            this.label2.Text = "ylo";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label2.UseMnemonic = false;
+            this.label2.Visible = false;
+            // 
+            // xlo_lbl
+            // 
+            this.xlo_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.xlo_lbl.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.xlo_lbl.Location = new System.Drawing.Point(76, 600);
+            this.xlo_lbl.Name = "xlo_lbl";
+            this.xlo_lbl.Size = new System.Drawing.Size(136, 26);
+            this.xlo_lbl.TabIndex = 1209;
+            this.xlo_lbl.Text = "xlo";
+            this.xlo_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.xlo_lbl.UseMnemonic = false;
+            this.xlo_lbl.Visible = false;
+            // 
+            // xhi_lbl
+            // 
+            this.xhi_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.xhi_lbl.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.xhi_lbl.Location = new System.Drawing.Point(648, 600);
+            this.xhi_lbl.Name = "xhi_lbl";
+            this.xhi_lbl.Size = new System.Drawing.Size(136, 26);
+            this.xhi_lbl.TabIndex = 1210;
+            this.xhi_lbl.Text = "xlo";
+            this.xhi_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.xhi_lbl.UseMnemonic = false;
+            this.xhi_lbl.Visible = false;
+            // 
+            // sc_posn_lbl
+            // 
+            this.sc_posn_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.sc_posn_lbl.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.sc_posn_lbl.Location = new System.Drawing.Point(279, 600);
+            this.sc_posn_lbl.Name = "sc_posn_lbl";
+            this.sc_posn_lbl.Size = new System.Drawing.Size(237, 26);
+            this.sc_posn_lbl.TabIndex = 1211;
+            this.sc_posn_lbl.Text = "Spacecraft Position, s | km past TCA";
+            this.sc_posn_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.sc_posn_lbl.UseMnemonic = false;
+            this.sc_posn_lbl.Visible = false;
+            // 
+            // cb3_posn_lbl
+            // 
+            this.cb3_posn_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cb3_posn_lbl.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.cb3_posn_lbl.Location = new System.Drawing.Point(15, 439);
+            this.cb3_posn_lbl.Name = "cb3_posn_lbl";
+            this.cb3_posn_lbl.Size = new System.Drawing.Size(55, 72);
+            this.cb3_posn_lbl.TabIndex = 1212;
+            this.cb3_posn_lbl.Text = "Solved\r\nP(t),\r\ns | km\r\npast\r\nPnom";
+            this.cb3_posn_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cb3_posn_lbl.UseMnemonic = false;
+            this.cb3_posn_lbl.Visible = false;
+            // 
+            // tca_lbl
+            // 
+            this.tca_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.tca_lbl.AutoSize = true;
+            this.tca_lbl.ForeColor = System.Drawing.Color.White;
+            this.tca_lbl.Location = new System.Drawing.Point(517, 576);
+            this.tca_lbl.Name = "tca_lbl";
+            this.tca_lbl.Size = new System.Drawing.Size(28, 13);
+            this.tca_lbl.TabIndex = 1213;
+            this.tca_lbl.Text = "TCA";
+            this.tca_lbl.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.tca_lbl.Visible = false;
+            // 
+            // pnom_lbl
+            // 
+            this.pnom_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pnom_lbl.AutoSize = true;
+            this.pnom_lbl.ForeColor = System.Drawing.Color.White;
+            this.pnom_lbl.Location = new System.Drawing.Point(80, 469);
+            this.pnom_lbl.Name = "pnom_lbl";
+            this.pnom_lbl.Size = new System.Drawing.Size(34, 13);
+            this.pnom_lbl.TabIndex = 1214;
+            this.pnom_lbl.Text = "Pnom";
+            this.pnom_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.pnom_lbl.Visible = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(845, 622);
-            this.Controls.Add(this.top_left_gb);
+            this.Controls.Add(this.pnom_lbl);
+            this.Controls.Add(this.tca_lbl);
+            this.Controls.Add(this.cb3_posn_lbl);
+            this.Controls.Add(this.sc_posn_lbl);
+            this.Controls.Add(this.xhi_lbl);
+            this.Controls.Add(this.xlo_lbl);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.yhi_lbl);
+            this.Controls.Add(this.ylo_lbl);
+            this.Controls.Add(this.constint_nan_lbl);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.bottom_right_gb);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.xcb3_init);
@@ -484,8 +646,10 @@ namespace Dpdtrun
             this.Controls.Add(this.tmi_right_lbl);
             this.Controls.Add(this.tmr_left_lbl);
             this.Controls.Add(this.tmr_tb);
-            this.Controls.Add(dpdtrun_diagram);
             this.Controls.Add(this.flowLayoutPanel1);
+            this.Controls.Add(dpdtrun_diagram);
+            this.Controls.Add(this.top_left_gb);
+            this.ForeColor = System.Drawing.Color.Black;
             this.Name = "Form1";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -542,6 +706,17 @@ namespace Dpdtrun
         private System.Windows.Forms.GroupBox bottom_right_gb;
         private System.Windows.Forms.GroupBox top_left_gb;
         private FlowLayoutPanel flowLayoutPanel1;
+        private Label label1;
+        private Label constint_nan_lbl;
+        private Label ylo_lbl;
+        private Label yhi_lbl;
+        private Label label2;
+        private Label xlo_lbl;
+        private Label xhi_lbl;
+        private Label sc_posn_lbl;
+        private Label cb3_posn_lbl;
+        private Label tca_lbl;
+        private Label pnom_lbl;
     }
 }
 
