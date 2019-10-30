@@ -252,7 +252,8 @@ namespace DpdtrunUI
 
         /// <summary>
         ///            Plotting in the form
-        ///            This is re-inventing the wheel, but it's easy
+        ///            This is re-inventing the wheel,
+        ///            but it's easy and makes the app somewhat self-contained
         /// </summary>
         class Plot_surface
         {
@@ -268,10 +269,10 @@ namespace DpdtrunUI
             private System.Drawing.Graphics F1g;
             private System.Drawing.SolidBrush F1brushblk;  // Black
             private System.Drawing.SolidBrush F1brushlty;  // LightYellow
+            private System.Drawing.SolidBrush F1brushdiffs;
             private System.Drawing.Pen F1penblk;
             private System.Drawing.Pen F1penwht;
             private System.Drawing.Pen F1peninitlines;
-
 
             /// <summary>
             ///           Constructor
@@ -289,6 +290,7 @@ namespace DpdtrunUI
                 F1g = F1.CreateGraphics();
                 F1brushblk = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
                 F1brushlty = new System.Drawing.SolidBrush(System.Drawing.Color.LightYellow);
+                F1brushdiffs = new System.Drawing.SolidBrush(F1.diffs_lbl.ForeColor);
                 F1penblk = new System.Drawing.Pen(Color.Black, 2);
                 F1penwht = new System.Drawing.Pen(Color.White, 2);
                 F1peninitlines = new System.Drawing.Pen(F1.cb3_init_lbl.ForeColor);
@@ -301,6 +303,7 @@ namespace DpdtrunUI
                 if (!(F1penblk is null)) F1penblk.Dispose();
                 if (!(F1penwht is null)) F1penwht.Dispose();
                 if (!(F1peninitlines is null)) F1peninitlines.Dispose();
+                if (!(F1brushdiffs is null)) F1brushdiffs.Dispose();
                 if (!(F1g is null)) F1g.Dispose();
             }
 
@@ -343,9 +346,23 @@ namespace DpdtrunUI
                 F1g.DrawLine(pen, ix=Xscaler.D2p(x), Ybot, Xscaler.D2p(x), Ytop);
             }
 
+            static IEnumerable<double> Zipabsdiff(IEnumerable<double> anenumable, IEnumerable<double> rkenumable)
+            {
+                var enuman = anenumable.GetEnumerator();
+                var enumrk = rkenumable.GetEnumerator();
+                while (enuman.MoveNext())
+                {
+                    enumrk.MoveNext();
+                    yield return Math.Abs(enuman.Current - enumrk.Current);
+                }
+            }
+
             public void Do_plot(List<List<double>>listlist)
             {
-                // Set X limits in seconds
+                Clear();
+                DrawRectangle();
+
+                // Set X limits, units are seconds
                 double xmx = listlist[0][0];
                 double xmn = xmx;
                 foreach (double val in listlist[0])
@@ -355,10 +372,95 @@ namespace DpdtrunUI
                 }
                 Setlims(xmn, xmx, true);
 
-                // Set Y limits in km
-                double ymx = listlist[1][0];
+                // Plot log base 1000 of absolute differences between analytical and RK solutions
+                List<double> cb3absdiffs = Zipabsdiff(listlist[1], listlist[2]).ToList();
+
+                // - Find maximum difference
+                double cb3absdiffmx = cb3absdiffs[0];
+                foreach (double val in cb3absdiffs)
+                {
+                    if (val > cb3absdiffmx) cb3absdiffmx = val;
+                }
+
+                List<Label> labels = new List<Label>
+                    {
+                        F1.diff_yoctom_lbl
+                        , F1.diff_zetam_lbl
+                        , F1.diff_attom_lbl
+                        , F1.diff_femtom_lbl
+                        , F1.diff_picom_lbl
+                        , F1.diff_nanom_lbl
+                        , F1.diff_microm_lbl
+                        , F1.diff_millim_lbl
+                        , F1.diff_m_lbl
+                        , F1.diff_km_lbl
+                        , F1.diff_megam_lbl
+                        , F1.diff_gigam_lbl
+                    };
+
+                // - Plot differences only if some are non-zero
+                if (cb3absdiffmx == 0d)
+                {
+                    F1.diffs_lbl.Visible = false;
+                    foreach (Label lbl in labels) lbl.Visible = false;
+                }
+                else
+                {
+                    // - Find minimum difference
+                    double cb3absdiffmn = cb3absdiffmx;
+                    foreach (double val in cb3absdiffs)
+                    {
+                        if (0d < val && val < cb3absdiffmn) cb3absdiffmn = val;
+                    }
+
+                    // - Set limits as log base 1000
+                    double log1k = Math.Log(1000d);
+                    double lolim = Math.Floor(Math.Log(cb3absdiffmn) / log1k) - 1;
+                    double hilim = Math.Ceiling(Math.Log(cb3absdiffmx) / log1k);
+
+                    // - Differences that are zero will be a very low logarithm
+                    double zerolim = (2d * (lolim - 0.5)) - (hilim + 0.5);
+
+                    // - Convert differences to log values
+                    List<double> log1kdiffs = new List<double>(cb3absdiffs.Count);
+                    foreach (double val in cb3absdiffs) log1kdiffs.Add(val > 0 ? (Math.Log(val) / log1k) : zerolim);
+                    
+                    // - Set ordinate to log limits
+                    Setlims(lolim - 0.5, hilim + 0.5, false);
+
+                    // Make visible and locate the right ordinate axis title
+                    F1.diffs_lbl.Visible = true;
+                    F1.diffs_lbl.Location = new Point(F1.diffs_lbl.Location.X
+                                                     , (Ytop + Ybot - F1.diffs_lbl.Size.Height) / 2
+                                                     );
+
+                    // Make visible and locate the right ordinate labels
+                    foreach (Label lbl in labels)
+                    {
+                        try
+                        {
+                            double tag = Convert.ToDouble(lbl.Tag);
+                            if (tag < lolim || tag > hilim) throw new Exception("ignore");
+                            lbl.Location = new Point(lbl.Location.X, Yscaler.D2p(tag));
+                            lbl.Visible = true;
+                        }
+                        catch
+                        {
+                            lbl.Visible = false;
+                        }
+                    }
+
+                    // Plot the differences between the analytical and Runge-Kutta solutions
+                    Spots(listlist[0], log1kdiffs, F1brushdiffs, 3);
+
+                } // if (cb3absdiffmx == 0d) ... else
+
+
+
+                    // Set ordinate limits in km
+                    double ymx = listlist[1][0];
                 double ymn = ymx;
-                foreach (List<double> ylist in listlist)
+                foreach (List<double> ylist in listlist.GetRange(1,2))
                 {
                     foreach (double val in ylist)
                     {
@@ -367,9 +469,6 @@ namespace DpdtrunUI
                     }
                 }
                 Setlims(ymn, ymx, false);
-
-                Clear();
-                DrawRectangle();
 
                 // Horizontal line at CB3 initial position
                 Hline(F1.Dpdtrun.X_cb3_init, F1peninitlines);
