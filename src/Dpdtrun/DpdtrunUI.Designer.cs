@@ -506,6 +506,7 @@ namespace DpdtrunUI
             // ylo_lbl
             // 
             this.ylo_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ylo_lbl.BackColor = System.Drawing.Color.Transparent;
             this.ylo_lbl.Location = new System.Drawing.Point(-57, 583);
             this.ylo_lbl.Name = "ylo_lbl";
             this.ylo_lbl.Size = new System.Drawing.Size(136, 20);
@@ -517,6 +518,7 @@ namespace DpdtrunUI
             // 
             // yhi_lbl
             // 
+            this.yhi_lbl.BackColor = System.Drawing.Color.Transparent;
             this.yhi_lbl.Location = new System.Drawing.Point(-54, 352);
             this.yhi_lbl.Name = "yhi_lbl";
             this.yhi_lbl.Size = new System.Drawing.Size(133, 21);
@@ -539,6 +541,7 @@ namespace DpdtrunUI
             // xlo_lbl
             // 
             this.xlo_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.xlo_lbl.BackColor = System.Drawing.Color.Transparent;
             this.xlo_lbl.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.xlo_lbl.Location = new System.Drawing.Point(76, 600);
             this.xlo_lbl.Name = "xlo_lbl";
@@ -552,6 +555,7 @@ namespace DpdtrunUI
             // xhi_lbl
             // 
             this.xhi_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.xhi_lbl.BackColor = System.Drawing.Color.Transparent;
             this.xhi_lbl.ImageAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.xhi_lbl.Location = new System.Drawing.Point(648, 600);
             this.xhi_lbl.Name = "xhi_lbl";
@@ -592,6 +596,7 @@ namespace DpdtrunUI
             // 
             this.tca_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.tca_lbl.AutoSize = true;
+            this.tca_lbl.BackColor = System.Drawing.Color.Transparent;
             this.tca_lbl.ForeColor = System.Drawing.Color.White;
             this.tca_lbl.Location = new System.Drawing.Point(517, 576);
             this.tca_lbl.Name = "tca_lbl";
@@ -605,6 +610,7 @@ namespace DpdtrunUI
             // 
             this.pnom_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pnom_lbl.AutoSize = true;
+            this.pnom_lbl.BackColor = System.Drawing.Color.Transparent;
             this.pnom_lbl.ForeColor = System.Drawing.Color.White;
             this.pnom_lbl.Location = new System.Drawing.Point(80, 469);
             this.pnom_lbl.Name = "pnom_lbl";
@@ -618,6 +624,7 @@ namespace DpdtrunUI
             // 
             this.cb3_init_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cb3_init_lbl.AutoSize = true;
+            this.cb3_init_lbl.BackColor = System.Drawing.Color.Transparent;
             this.cb3_init_lbl.ForeColor = System.Drawing.Color.LightSkyBlue;
             this.cb3_init_lbl.Location = new System.Drawing.Point(120, 419);
             this.cb3_init_lbl.Name = "cb3_init_lbl";
@@ -631,6 +638,7 @@ namespace DpdtrunUI
             // 
             this.sc_init_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.sc_init_lbl.AutoSize = true;
+            this.sc_init_lbl.BackColor = System.Drawing.Color.Transparent;
             this.sc_init_lbl.ForeColor = System.Drawing.Color.LightSkyBlue;
             this.sc_init_lbl.Location = new System.Drawing.Point(551, 562);
             this.sc_init_lbl.Name = "sc_init_lbl";
