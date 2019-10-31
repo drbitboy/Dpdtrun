@@ -1,6 +1,6 @@
 # Quickstart
 
-On Windows-x64:  download, and extract contents of, 
+On Windows-x64, .NET 3.0:  download, and extract contents of, 
 [this ZIP file](https://github.com/drbitboy/Dpdtrun/raw/master/Dpdtrun-win-x64-dotnet3.0.zip),
 then run resulting Dpdtrun.exe.
 
