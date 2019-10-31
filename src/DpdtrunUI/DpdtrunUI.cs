@@ -226,36 +226,133 @@ namespace DpdtrunUI
             }
         }
 
-        class Scaler
+        /// <summary>
+        ///           XY plot scaling integrated using a Matrix
+        /// </summary>
+        class XYScaler
         {
-            private double Low_data { set; get; }
-            private double Low_plot { set; get; }
-            private double High_plot { set; get; }
-            private double Range_ratio { set; get; }
+            double[][] xymatrix;
+            private double Low_datax { set; get; }
+            private double High_datax { set; get; }
+            private double Low_datay { set; get; }
+            private double High_datay { set; get; }
 
-            public Scaler(double lodata, double hidata, double loplot, double hiplot)
+            /// <summary>
+            ///           Constructor for XYScaler
+            /// </summary>
+            /// <param name="lodatax">Left-most X data value to plot</param>
+            /// <param name="hidatax">Right-most X data value to plot</param>
+            /// <param name="loplotx">Left-most plot position in graphics coordinate system (GCS)</param>
+            /// <param name="hiplotx">Right-most plot position in GCS</param>
+            /// <param name="lodatay">Bottom-most Y data value to plot</param>
+            /// <param name="hidatay">Top-most Y data value to plot</param>
+            /// <param name="loploty">Bottom-most plot position in GCS</param>
+            /// <param name="hiploty">Top-most plot position in GCS</param>
+            public XYScaler(double lodatax, double hidatax, double loplotx, double hiplotx
+                           , double lodatay, double hidatay, double loploty, double hiploty
+                           )
             {
-                Low_data = lodata;
-                Low_plot = loplot;
-                High_plot = hiplot;
-                Range_ratio = (hiplot - loplot) / (hidata - lodata);
+                xymatrix = new double[3][];
+                // Populate 3x3 matrix
+                double scaler = (hiplotx - loplotx) / (hidatax - lodatax);
+                xymatrix[0] = new double[] { scaler, 0d, loplotx - (scaler * lodatax) };
+
+                scaler = (hiploty - loploty) / (hidatay - lodatay);
+                xymatrix[1] = new double[] { 0d, scaler, loploty - (scaler * lodatay) };
+
+                xymatrix[1] = new double[] { 0d, 0d, 1d };
+
+                // Save upper limits to deal with infinity
+                Low_datax = lodatax;
+                High_datax = hidatax;
+                Low_datay = lodatay;
+                High_datay = hidatay;
             }
 
             /// <summary>
-            ///           Data to plot
+            ///            Re-set either X row (xymatrix[0]) or Y row (xymatrix)
             /// </summary>
-            /// <param name="val">Data value</param>
-            /// <returns>Plot position equivalent to data value</returns>
-            public int D2p(double val)
+            /// <param name="lodata">Left-most X or bottom-most Y data value</param>
+            /// <param name="hidata">Right-most X or top-most Y data value</param>
+            /// <param name="loplot">Left-most or bottom-most plot position in Graphical Coordinate System (GCS)</param>
+            /// <param name="hiplot">Right-most or top-most plot position in GCS</param>
+            /// <param name="isX">True or false to set X or Y row, respectively</param>
+            public void Setlims(double lodata, double hidata, double loplot, double hiplot, bool isX)
             {
-                if (Double.IsInfinity(val))
+                double scaler = (hiplot - loplot) / (hidata - lodata);
+                if (isX)
                 {
-                    if ((val > 0d && Range_ratio > 0d) || (val < 0d && Range_ratio < 0d)) return Convert.ToInt32(High_plot);
-                    else return Convert.ToInt32(Low_plot);
+                    xymatrix[0] = new double[] { scaler, 0d, loplot - (scaler * lodata) };
+                    Low_datax = lodata;
+                    High_datax = hidata;
                 }
-                return Convert.ToInt32(Math.Round(Low_plot + (Range_ratio * (val - Low_data)), 0));
+                else
+                {
+                    xymatrix[1] = new double[] { 0d, scaler, loplot - (scaler * lodata) };
+                    Low_datay = lodata;
+                    High_datay = hidata;
+                }
             }
-        }
+
+            /// <summary>
+            ///           Dot product of two vectors; unit operation of Transform
+            /// </summary>
+            /// <param name="v1">First 3-vector</param>
+            /// <param name="v2">Secont 3-vector</param>
+            /// <returns></returns>
+            private double Dot(double[] v1, double[] v2)
+            {
+                return (v1[0] * v2[0]) + (v1[1] * v2[1]) + (v1[2] * v2[2]);
+            }
+
+            /// <summary>
+            ///           Multiply vector by xymatrix
+            /// </summary>
+            /// <param name="v">Input 3-vector to be transformed</param>
+            /// <returns>New 3-vector</returns>
+            private double[] Transform(double[] v)
+            {
+                return new double[] { Dot(xymatrix[0], v), Dot(xymatrix[1], v), 1d };
+            }
+
+            /// <summary>
+            ///           Coordinate transformation from real data to plot
+            /// </summary>
+            /// <param name="xval"></param>
+            /// <param name="yval"></param>
+            /// <returns>Point</returns>
+            public Point D2p(double X, double Y)
+            {
+                // Store (X,Y,1) in a vector
+                double[] v = new double[] { Double.IsInfinity(X) ? (X>0d ? High_datax : Low_datax) : X
+                                          , Double.IsInfinity(Y) ? (X>0d ? High_datay : Low_datay) : Y
+                                          , 1d
+                                          };
+
+                // Transform (X,Y) data to graphical coordinate system
+                double[] mxv = Transform(v);
+
+                // Return point
+                return new Point(Convert.ToInt32(mxv[0]), Convert.ToInt32(mxv[1]));
+            }
+
+            public int D2py(double Y)
+            {
+                return Convert.ToInt32(Dot(xymatrix[1]
+                                          , new double[] { 0d, double.IsInfinity(Y) ? High_datay : Y, 1d }
+                                          )
+                                      );
+            }
+
+            public int D2px(double X)
+            {
+                return Convert.ToInt32(Dot(xymatrix[0]
+                                          , new double[] { 0d, double.IsInfinity(X) ? High_datay : X, 1d }
+                                          )
+                                      );
+            }
+        } // class XYScaler
+
 
         /// <summary>
         ///            Plotting in the form
@@ -271,8 +368,7 @@ namespace DpdtrunUI
             private int Wid { set; get; }
             private int Hgt { set; get; }
             private Form1 F1 { set; get; }
-            private Scaler Xscaler;
-            private Scaler Yscaler;
+            private XYScaler xyscal;
             private System.Drawing.Graphics F1g;
             private System.Drawing.SolidBrush F1brushblk;  // Black
             private System.Drawing.SolidBrush F1brushlty;  // LightYellow
@@ -314,29 +410,41 @@ namespace DpdtrunUI
                 if (!(F1g is null)) F1g.Dispose();
             }
 
-            //public void Clear() {  F1.}
-
             public void Setlims(double lodata, double hidata, bool isX)
             {
-                if (isX)
+                if (xyscal is null)
                 {
-                    Xscaler = new Scaler(lodata, hidata, Xlft, Xrgt);
+                    if (isX) { xyscal = new XYScaler(lodata, hidata, Xlft, Xrgt, 0d, 1d, 0d, 1d); }
+                    else     { xyscal = new XYScaler(0d, 1d, 0d, 1d, lodata, hidata, Ybot, Ytop); }
                 }
-                else
-                {
-                    Yscaler = new Scaler(lodata, hidata, Ybot, Ytop);
-                }
+                else { xyscal.Setlims(lodata, hidata, isX ? Xlft : Ybot, isX ? Xrgt : Ytop, isX); }
+            }
+
+            private static Point Ptminus(Point p1, int offset)
+            {
+                return new Point(p1.X - offset, p1.Y - offset);
             }
 
             public void Clear() { F1g.Clear(F1.BackColor); }
-            public void DrawRectangle()
+
+            public void DrawAxes()
             {
                 F1g.DrawRectangle(F1penblk, Rectangle.FromLTRB(Xlft, Ytop, Xrgt, Ybot));
             }
-            public void Spot(double xdata, double ydata, Brush brush, int diameter)
+
+            /// <summary>
+            ///           Draw one data point as a circle of a given diameter
+            /// </summary>
+            /// <param name="xdata">X data coordinate</param>
+            /// <param name="ydata">Y data coordinate</param>
+            /// <param name="brush">Brush to use</param>
+            /// <param name="diam">Diameter of filled circle to draw</param>
+            public void Spot(double xdata, double ydata, Brush brush, int diam)
             {
-                int radius = diameter >> 1;
-                F1g.FillEllipse(brush, new Rectangle(Xscaler.D2p(xdata)-radius, Yscaler.D2p(ydata)-radius, diameter, diameter));
+                int radius = diam >> 1;
+                Point topleft = Ptminus(xyscal.D2p(xdata, ydata), radius);
+                System.Drawing.Size sz = new Size(diam, diam);
+                F1g.FillEllipse(brush, new Rectangle(topleft, sz));
             }
             public void Spots(List<double> xlist, List<double> ylist, Brush brush, int diameter)
             {
@@ -345,12 +453,13 @@ namespace DpdtrunUI
             }
             public void Hline(double y, Pen pen)
             {
-                F1g.DrawLine(pen, Xlft, Yscaler.D2p(y), Xrgt, Yscaler.D2p(y));
+                int ploty = xyscal.D2py(y);
+                F1g.DrawLine(pen, Xlft, ploty, Xrgt, ploty);
             }
             public void Vline(double x, Pen pen)
             {
-                int ix;
-                F1g.DrawLine(pen, ix=Xscaler.D2p(x), Ybot, Xscaler.D2p(x), Ytop);
+                int iplotx = xyscal.D2px(x);
+                F1g.DrawLine(pen, iplotx, Ybot, iplotx, Ytop);
             }
 
             static IEnumerable<double> Zipabsdiff(IEnumerable<double> anenumable, IEnumerable<double> rkenumable)
@@ -368,7 +477,7 @@ namespace DpdtrunUI
             public void Do_plot(List<List<double>>listlist)
             {
                 Clear();
-                DrawRectangle();
+                DrawAxes();
 
                 // Set X limits, units are seconds
                 double xmx = listlist[0][0];
@@ -388,7 +497,7 @@ namespace DpdtrunUI
                     foreach (double val in ylist)
                     {
                         if (Double.IsInfinity(val)) continue;
-                        if (val > ymx) ymx = val;
+                        if (val > ymx || Double.IsInfinity(ymx)) ymx = val;
                         else if (val < ymn) ymn = val;
                     }
                 }
@@ -396,20 +505,20 @@ namespace DpdtrunUI
 
                 // Horizontal line at CB3 initial position
                 Hline(F1.Dpdtrun.X_cb3_init, F1peninitlines);
-                F1.cb3_init_lbl.Location = new Point(F1.cb3_init_lbl.Location.X, Yscaler.D2p(F1.Dpdtrun.X_cb3_init) + 3);
+                F1.cb3_init_lbl.Location = new Point(F1.cb3_init_lbl.Location.X, xyscal.D2py(F1.Dpdtrun.X_cb3_init) + 3);
                 F1.cb3_init_lbl.Visible = true;
 
                 // Vertical line at S/C initial position; convert km to seconds first
                 double Sc_init_s = F1.Dpdtrun.Sc_init / F1.Dpdtrun.Vfb;
                 Vline(Sc_init_s, F1peninitlines);
-                F1.sc_init_lbl.Location = new Point(Xscaler.D2p(Sc_init_s) + 3, F1.sc_init_lbl.Location.Y);
+                F1.sc_init_lbl.Location = new Point(xyscal.D2px(Sc_init_s) + 3, F1.sc_init_lbl.Location.Y);
                 F1.sc_init_lbl.Visible = true;
 
                 // Vertical line at zero (t-TCA = 0)
                 if (xmn < 0 && 0 < xmx)
                 {
                     Vline(0, F1penwht);
-                    F1.tca_lbl.Location = new Point(Xscaler.D2p(0) + 3, F1.tca_lbl.Location.Y);
+                    F1.tca_lbl.Location = new Point(xyscal.D2px(0) + 3, F1.tca_lbl.Location.Y);
                     F1.tca_lbl.Visible = true;
                 }
                 else
@@ -421,7 +530,7 @@ namespace DpdtrunUI
                 if (ymn < 0 && 0 < ymx)
                 {
                     Hline(0, F1penwht);
-                    F1.pnom_lbl.Location = new Point(F1.pnom_lbl.Location.X, Yscaler.D2p(0) + 3);
+                    F1.pnom_lbl.Location = new Point(F1.pnom_lbl.Location.X, xyscal.D2py(0) + 3);
                     F1.pnom_lbl.Visible = true;
                 }
                 else
@@ -435,7 +544,7 @@ namespace DpdtrunUI
 
                 // Plot limits:  Y min; Y max; X min; X max
                 F1.ylo_lbl.Text = String.Format("{0}s|{1}km"
-                                               , Convert.ToInt32(Math.Round(ymn / F1.Dpdtrun.Vfb, 0))
+                                               , Math.Round(ymn / F1.Dpdtrun.Vfb, 0)
                                                , Math.Round(ymn, 0)
                                                );
                 F1.ylo_lbl.Visible = true;
@@ -447,7 +556,7 @@ namespace DpdtrunUI
                 F1.yhi_lbl.Visible = true;
 
                 F1.xlo_lbl.Text = String.Format("{0}s|{1}km"
-                                               , Convert.ToInt32(Math.Round(xmn, 0))
+                                               , Math.Round(xmn, 0)
                                                , Math.Round(xmn * F1.Dpdtrun.Vfb, 0)
                                                );
                 F1.xlo_lbl.Visible = true;
@@ -473,7 +582,8 @@ namespace DpdtrunUI
                 double cb3absdiffmx = cb3absdiffs[0];
                 foreach (double val in cb3absdiffs)
                 {
-                    if (val > cb3absdiffmx) cb3absdiffmx = val;
+                    if (Double.IsInfinity(val)) continue;
+                    if (val > cb3absdiffmx || Double.IsInfinity(cb3absdiffmx)) cb3absdiffmx = val;
                 }
 
                 List<Label> labels = new List<Label>
@@ -538,7 +648,7 @@ namespace DpdtrunUI
                         {
                             double tag = Convert.ToDouble(lbl.Tag);
                             if (tag < lolim || tag > hilim) throw new Exception("ignore");
-                            lbl.Location = new Point(lbl.Location.X, Yscaler.D2p(tag));
+                            lbl.Location = new Point(lbl.Location.X, xyscal.D2py(tag));
                             lbl.Visible = true;
                         }
                         catch
