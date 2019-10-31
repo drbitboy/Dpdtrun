@@ -1,3 +1,11 @@
+# Quickstart
+
+On Windows-x64:  download, and extract contents of, this ZIP file
+[https://github.com/drbitboy/Dpdtrun/raw/master/Deployer-win-x64-dotnet3.0.zip],
+then run resulting Dpdtrun.exe.
+
+# Details
+
 ![](https://github.com/drbitboy/Dpdtrun/raw/master/doc/Dpdtrun_usage.png)
 
     /*//////////////////////////////////////////////////////////////////
