@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DpdtrunUI", "Dpdtrun\DpdtrunUI.csproj", "{A7EBB18A-5A1C-4189-8BC8-704C847C6D67}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DpdtrunUI", "DpdtrunUI\DpdtrunUI.csproj", "{A7EBB18A-5A1C-4189-8BC8-704C847C6D67}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rk4lib", "Rk4lib\Rk4lib.csproj", "{98E93AC2-982A-4E53-8D23-3DE9F5515DDB}"
 EndProject
