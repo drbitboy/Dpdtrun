@@ -59,15 +59,5 @@ namespace Dpdtrun {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap dpdtrun_diagram_wonb {
-            get {
-                object obj = ResourceManager.GetObject("dpdtrun_diagram_wonb", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }
