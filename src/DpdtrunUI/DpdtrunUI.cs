@@ -39,7 +39,7 @@ namespace DpdtrunUI
         /// <param name="e">Not used</param>
         private void excel_btn_Click(object sender, EventArgs e)
         {
-            if (excel_ofd.InitialDirectory is null)
+            if (String.IsNullOrEmpty(excel_ofd.InitialDirectory))
             {
                 excel_ofd.InitialDirectory = Application.StartupPath;
             }
@@ -47,7 +47,7 @@ namespace DpdtrunUI
             if (excel_ofd.ShowDialog() == DialogResult.OK)
             {
                 excel_tb.Text = excel_ofd.FileName;
-                excel_ofd.InitialDirectory = Path.GetFullPath(excel_ofd.FileName);
+                excel_ofd.FilterIndex = excel_ofd.FileName.EndsWith(".html") ? 2 : 1;
             } else
             {
                 excel_tb.Text = "";
@@ -174,11 +174,12 @@ namespace DpdtrunUI
 
                 Plot_data();
 
-                if (excel_tb.Text.EndsWith(".xls"))
+                bool isXls;
+                if ((isXls = excel_tb.Text.EndsWith(".xls")) || excel_tb.Text.EndsWith(".html"))
                 {
                     Dpdtrun.Write_xls(excel_tb.Text);
                     excel_tb.Text = "";
-                    send_log_lbl("Integration complete\nwrote to eXcel file");
+                    send_log_lbl(String.Format("Integration complete\nwrote to {0} file", isXls ? "eXcel" : "HTML"));
                 }
             }
             catch (System.Exception theexcept)

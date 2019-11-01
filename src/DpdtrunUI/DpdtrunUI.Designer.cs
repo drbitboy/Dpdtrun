@@ -278,8 +278,8 @@ namespace DpdtrunUI
             // 
             this.excel_ofd.CheckFileExists = false;
             this.excel_ofd.FileName = "dpdtrun00.xls";
-            this.excel_ofd.Filter = "eXcel files (*.xls)|*.xls|All files (*.*)|*.*";
-            this.excel_ofd.InitialDirectory = null; // ".\\";
+            this.excel_ofd.Filter = "eXcel files (*.xls)|*.xls|HTML files (*.html)|*.html|All files (*.*)|*.*";
+            this.excel_ofd.InitialDirectory = ".\\";
             this.excel_ofd.Title = "eXcel file to save dP/dt run data";
             // 
             // xcb0km_left_lbl
