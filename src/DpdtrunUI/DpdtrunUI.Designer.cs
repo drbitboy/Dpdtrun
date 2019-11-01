@@ -85,7 +85,7 @@ namespace DpdtrunUI
             this.sc_init_lbl = new System.Windows.Forms.Label();
             this.diffs_lbl = new System.Windows.Forms.Label();
             this.diff_yoctom_lbl = new System.Windows.Forms.Label();
-            this.diff_zetam_lbl = new System.Windows.Forms.Label();
+            this.diff_zeptom_lbl = new System.Windows.Forms.Label();
             this.diff_attom_lbl = new System.Windows.Forms.Label();
             this.diff_femtom_lbl = new System.Windows.Forms.Label();
             this.diff_picom_lbl = new System.Windows.Forms.Label();
@@ -96,6 +96,11 @@ namespace DpdtrunUI
             this.diff_km_lbl = new System.Windows.Forms.Label();
             this.diff_megam_lbl = new System.Windows.Forms.Label();
             this.diff_gigam_lbl = new System.Windows.Forms.Label();
+            this.diff_teram_lbl = new System.Windows.Forms.Label();
+            this.diff_petam_lbl = new System.Windows.Forms.Label();
+            this.diff_exam_lbl = new System.Windows.Forms.Label();
+            this.diff_zettam_lbl = new System.Windows.Forms.Label();
+            this.diff_yottam_lbl = new System.Windows.Forms.Label();
             dpdtrun_diagram = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -651,11 +656,11 @@ namespace DpdtrunUI
             // 
             this.diffs_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.diffs_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.diffs_lbl.Location = new System.Drawing.Point(807, 425);
+            this.diffs_lbl.Location = new System.Drawing.Point(801, 415);
             this.diffs_lbl.Name = "diffs_lbl";
-            this.diffs_lbl.Size = new System.Drawing.Size(35, 116);
+            this.diffs_lbl.Size = new System.Drawing.Size(41, 150);
             this.diffs_lbl.TabIndex = 1217;
-            this.diffs_lbl.Text = "Log\r\ndiff\r\nbtw\r\nana-\r\nlyt-\r\nical\r\nand\r\nR-K\r\nsolns";
+            this.diffs_lbl.Text = "Log of\r\ndiffer-\r\nence\r\nbtw\r\nana-\r\nlyt-\r\nical\r\nand\r\nR-K\r\nsolu-\r\ntions";
             this.diffs_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.diffs_lbl.Visible = false;
             // 
@@ -664,7 +669,7 @@ namespace DpdtrunUI
             this.diff_yoctom_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.diff_yoctom_lbl.AutoSize = true;
             this.diff_yoctom_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.diff_yoctom_lbl.Location = new System.Drawing.Point(780, 555);
+            this.diff_yoctom_lbl.Location = new System.Drawing.Point(780, 578);
             this.diff_yoctom_lbl.Margin = new System.Windows.Forms.Padding(0);
             this.diff_yoctom_lbl.Name = "diff_yoctom_lbl";
             this.diff_yoctom_lbl.Size = new System.Drawing.Size(20, 13);
@@ -674,27 +679,27 @@ namespace DpdtrunUI
             this.diff_yoctom_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.diff_yoctom_lbl.Visible = false;
             // 
-            // diff_zetam_lbl
+            // diff_zeptom_lbl
             // 
-            this.diff_zetam_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.diff_zetam_lbl.AutoSize = true;
-            this.diff_zetam_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.diff_zetam_lbl.Location = new System.Drawing.Point(780, 542);
-            this.diff_zetam_lbl.Margin = new System.Windows.Forms.Padding(0);
-            this.diff_zetam_lbl.Name = "diff_zetam_lbl";
-            this.diff_zetam_lbl.Size = new System.Drawing.Size(20, 13);
-            this.diff_zetam_lbl.TabIndex = 1219;
-            this.diff_zetam_lbl.Tag = "-7";
-            this.diff_zetam_lbl.Text = "zm";
-            this.diff_zetam_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.diff_zetam_lbl.Visible = false;
+            this.diff_zeptom_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.diff_zeptom_lbl.AutoSize = true;
+            this.diff_zeptom_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.diff_zeptom_lbl.Location = new System.Drawing.Point(780, 565);
+            this.diff_zeptom_lbl.Margin = new System.Windows.Forms.Padding(0);
+            this.diff_zeptom_lbl.Name = "diff_zeptom_lbl";
+            this.diff_zeptom_lbl.Size = new System.Drawing.Size(20, 13);
+            this.diff_zeptom_lbl.TabIndex = 1219;
+            this.diff_zeptom_lbl.Tag = "-7";
+            this.diff_zeptom_lbl.Text = "zm";
+            this.diff_zeptom_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.diff_zeptom_lbl.Visible = false;
             // 
             // diff_attom_lbl
             // 
             this.diff_attom_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.diff_attom_lbl.AutoSize = true;
             this.diff_attom_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.diff_attom_lbl.Location = new System.Drawing.Point(780, 529);
+            this.diff_attom_lbl.Location = new System.Drawing.Point(780, 552);
             this.diff_attom_lbl.Margin = new System.Windows.Forms.Padding(0);
             this.diff_attom_lbl.Name = "diff_attom_lbl";
             this.diff_attom_lbl.Size = new System.Drawing.Size(21, 13);
@@ -709,7 +714,7 @@ namespace DpdtrunUI
             this.diff_femtom_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.diff_femtom_lbl.AutoSize = true;
             this.diff_femtom_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.diff_femtom_lbl.Location = new System.Drawing.Point(780, 516);
+            this.diff_femtom_lbl.Location = new System.Drawing.Point(780, 539);
             this.diff_femtom_lbl.Margin = new System.Windows.Forms.Padding(0);
             this.diff_femtom_lbl.Name = "diff_femtom_lbl";
             this.diff_femtom_lbl.Size = new System.Drawing.Size(18, 13);
@@ -724,7 +729,7 @@ namespace DpdtrunUI
             this.diff_picom_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.diff_picom_lbl.AutoSize = true;
             this.diff_picom_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.diff_picom_lbl.Location = new System.Drawing.Point(780, 498);
+            this.diff_picom_lbl.Location = new System.Drawing.Point(780, 521);
             this.diff_picom_lbl.Margin = new System.Windows.Forms.Padding(0);
             this.diff_picom_lbl.Name = "diff_picom_lbl";
             this.diff_picom_lbl.Size = new System.Drawing.Size(21, 13);
@@ -739,7 +744,7 @@ namespace DpdtrunUI
             this.diff_nanom_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.diff_nanom_lbl.AutoSize = true;
             this.diff_nanom_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.diff_nanom_lbl.Location = new System.Drawing.Point(780, 485);
+            this.diff_nanom_lbl.Location = new System.Drawing.Point(780, 508);
             this.diff_nanom_lbl.Margin = new System.Windows.Forms.Padding(0);
             this.diff_nanom_lbl.Name = "diff_nanom_lbl";
             this.diff_nanom_lbl.Size = new System.Drawing.Size(21, 13);
@@ -754,13 +759,13 @@ namespace DpdtrunUI
             this.diff_microm_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.diff_microm_lbl.AutoSize = true;
             this.diff_microm_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.diff_microm_lbl.Location = new System.Drawing.Point(780, 472);
+            this.diff_microm_lbl.Location = new System.Drawing.Point(780, 495);
             this.diff_microm_lbl.Margin = new System.Windows.Forms.Padding(0);
             this.diff_microm_lbl.Name = "diff_microm_lbl";
             this.diff_microm_lbl.Size = new System.Drawing.Size(21, 13);
             this.diff_microm_lbl.TabIndex = 1224;
             this.diff_microm_lbl.Tag = "-2";
-            this.diff_microm_lbl.Text = "um";
+            this.diff_microm_lbl.Text = "μm";
             this.diff_microm_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.diff_microm_lbl.Visible = false;
             // 
@@ -769,7 +774,7 @@ namespace DpdtrunUI
             this.diff_millim_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.diff_millim_lbl.AutoSize = true;
             this.diff_millim_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.diff_millim_lbl.Location = new System.Drawing.Point(780, 460);
+            this.diff_millim_lbl.Location = new System.Drawing.Point(780, 483);
             this.diff_millim_lbl.Margin = new System.Windows.Forms.Padding(0);
             this.diff_millim_lbl.Name = "diff_millim_lbl";
             this.diff_millim_lbl.Size = new System.Drawing.Size(23, 13);
@@ -781,9 +786,10 @@ namespace DpdtrunUI
             // 
             // diff_m_lbl
             // 
+            this.diff_m_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.diff_m_lbl.AutoSize = true;
             this.diff_m_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.diff_m_lbl.Location = new System.Drawing.Point(780, 446);
+            this.diff_m_lbl.Location = new System.Drawing.Point(780, 469);
             this.diff_m_lbl.Margin = new System.Windows.Forms.Padding(0);
             this.diff_m_lbl.Name = "diff_m_lbl";
             this.diff_m_lbl.Size = new System.Drawing.Size(15, 13);
@@ -798,7 +804,7 @@ namespace DpdtrunUI
             this.diff_km_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.diff_km_lbl.AutoSize = true;
             this.diff_km_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.diff_km_lbl.Location = new System.Drawing.Point(780, 433);
+            this.diff_km_lbl.Location = new System.Drawing.Point(780, 456);
             this.diff_km_lbl.Margin = new System.Windows.Forms.Padding(0);
             this.diff_km_lbl.Name = "diff_km_lbl";
             this.diff_km_lbl.Size = new System.Drawing.Size(21, 13);
@@ -813,7 +819,7 @@ namespace DpdtrunUI
             this.diff_megam_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.diff_megam_lbl.AutoSize = true;
             this.diff_megam_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.diff_megam_lbl.Location = new System.Drawing.Point(780, 419);
+            this.diff_megam_lbl.Location = new System.Drawing.Point(780, 442);
             this.diff_megam_lbl.Margin = new System.Windows.Forms.Padding(0);
             this.diff_megam_lbl.Name = "diff_megam_lbl";
             this.diff_megam_lbl.Size = new System.Drawing.Size(24, 13);
@@ -828,7 +834,7 @@ namespace DpdtrunUI
             this.diff_gigam_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.diff_gigam_lbl.AutoSize = true;
             this.diff_gigam_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.diff_gigam_lbl.Location = new System.Drawing.Point(780, 406);
+            this.diff_gigam_lbl.Location = new System.Drawing.Point(780, 429);
             this.diff_gigam_lbl.Margin = new System.Windows.Forms.Padding(0);
             this.diff_gigam_lbl.Name = "diff_gigam_lbl";
             this.diff_gigam_lbl.Size = new System.Drawing.Size(23, 13);
@@ -838,6 +844,86 @@ namespace DpdtrunUI
             this.diff_gigam_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.diff_gigam_lbl.Visible = false;
             // 
+            // diff_teram_lbl
+            // 
+            this.diff_teram_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.diff_teram_lbl.AutoSize = true;
+            this.diff_teram_lbl.BackColor = System.Drawing.Color.Transparent;
+            this.diff_teram_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.diff_teram_lbl.Location = new System.Drawing.Point(780, 415);
+            this.diff_teram_lbl.Margin = new System.Windows.Forms.Padding(0);
+            this.diff_teram_lbl.Name = "diff_teram_lbl";
+            this.diff_teram_lbl.Size = new System.Drawing.Size(22, 13);
+            this.diff_teram_lbl.TabIndex = 1230;
+            this.diff_teram_lbl.Tag = "4";
+            this.diff_teram_lbl.Text = "Tm";
+            this.diff_teram_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.diff_teram_lbl.Visible = false;
+            // 
+            // diff_petam_lbl
+            // 
+            this.diff_petam_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.diff_petam_lbl.AutoSize = true;
+            this.diff_petam_lbl.BackColor = System.Drawing.Color.Transparent;
+            this.diff_petam_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.diff_petam_lbl.Location = new System.Drawing.Point(780, 402);
+            this.diff_petam_lbl.Margin = new System.Windows.Forms.Padding(0);
+            this.diff_petam_lbl.Name = "diff_petam_lbl";
+            this.diff_petam_lbl.Size = new System.Drawing.Size(22, 13);
+            this.diff_petam_lbl.TabIndex = 1231;
+            this.diff_petam_lbl.Tag = "5";
+            this.diff_petam_lbl.Text = "Pm";
+            this.diff_petam_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.diff_petam_lbl.Visible = false;
+            // 
+            // diff_exam_lbl
+            // 
+            this.diff_exam_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.diff_exam_lbl.AutoSize = true;
+            this.diff_exam_lbl.BackColor = System.Drawing.Color.Transparent;
+            this.diff_exam_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.diff_exam_lbl.Location = new System.Drawing.Point(780, 389);
+            this.diff_exam_lbl.Margin = new System.Windows.Forms.Padding(0);
+            this.diff_exam_lbl.Name = "diff_exam_lbl";
+            this.diff_exam_lbl.Size = new System.Drawing.Size(22, 13);
+            this.diff_exam_lbl.TabIndex = 1232;
+            this.diff_exam_lbl.Tag = "6";
+            this.diff_exam_lbl.Text = "Em";
+            this.diff_exam_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.diff_exam_lbl.Visible = false;
+            // 
+            // diff_zettam_lbl
+            // 
+            this.diff_zettam_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.diff_zettam_lbl.AutoSize = true;
+            this.diff_zettam_lbl.BackColor = System.Drawing.Color.Transparent;
+            this.diff_zettam_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.diff_zettam_lbl.Location = new System.Drawing.Point(780, 376);
+            this.diff_zettam_lbl.Margin = new System.Windows.Forms.Padding(0);
+            this.diff_zettam_lbl.Name = "diff_zettam_lbl";
+            this.diff_zettam_lbl.Size = new System.Drawing.Size(22, 13);
+            this.diff_zettam_lbl.TabIndex = 1233;
+            this.diff_zettam_lbl.Tag = "7";
+            this.diff_zettam_lbl.Text = "Zm";
+            this.diff_zettam_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.diff_zettam_lbl.Visible = false;
+            // 
+            // diff_yottam_lbl
+            // 
+            this.diff_yottam_lbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.diff_yottam_lbl.AutoSize = true;
+            this.diff_yottam_lbl.BackColor = System.Drawing.Color.Transparent;
+            this.diff_yottam_lbl.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.diff_yottam_lbl.Location = new System.Drawing.Point(780, 363);
+            this.diff_yottam_lbl.Margin = new System.Windows.Forms.Padding(0);
+            this.diff_yottam_lbl.Name = "diff_yottam_lbl";
+            this.diff_yottam_lbl.Size = new System.Drawing.Size(22, 13);
+            this.diff_yottam_lbl.TabIndex = 1234;
+            this.diff_yottam_lbl.Tag = "8";
+            this.diff_yottam_lbl.Text = "Ym";
+            this.diff_yottam_lbl.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.diff_yottam_lbl.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -845,6 +931,11 @@ namespace DpdtrunUI
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(845, 622);
+            this.Controls.Add(this.diff_yottam_lbl);
+            this.Controls.Add(this.diff_zettam_lbl);
+            this.Controls.Add(this.diff_exam_lbl);
+            this.Controls.Add(this.diff_petam_lbl);
+            this.Controls.Add(this.diff_teram_lbl);
             this.Controls.Add(this.diff_gigam_lbl);
             this.Controls.Add(this.diff_megam_lbl);
             this.Controls.Add(this.diff_km_lbl);
@@ -855,7 +946,7 @@ namespace DpdtrunUI
             this.Controls.Add(this.diff_picom_lbl);
             this.Controls.Add(this.diff_femtom_lbl);
             this.Controls.Add(this.diff_attom_lbl);
-            this.Controls.Add(this.diff_zetam_lbl);
+            this.Controls.Add(this.diff_zeptom_lbl);
             this.Controls.Add(this.diff_yoctom_lbl);
             this.Controls.Add(this.sc_init_lbl);
             this.Controls.Add(this.cb3_init_lbl);
@@ -975,7 +1066,7 @@ namespace DpdtrunUI
         private Label sc_init_lbl;
         private Label diffs_lbl;
         private Label diff_yoctom_lbl;
-        private Label diff_zetam_lbl;
+        private Label diff_zeptom_lbl;
         private Label diff_attom_lbl;
         private Label diff_femtom_lbl;
         private Label diff_picom_lbl;
@@ -986,6 +1077,11 @@ namespace DpdtrunUI
         private Label diff_km_lbl;
         private Label diff_megam_lbl;
         private Label diff_gigam_lbl;
+        private Label diff_teram_lbl;
+        private Label diff_petam_lbl;
+        private Label diff_exam_lbl;
+        private Label diff_zettam_lbl;
+        private Label diff_yottam_lbl;
     }
 }
 

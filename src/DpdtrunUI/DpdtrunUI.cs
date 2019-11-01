@@ -347,7 +347,7 @@ namespace DpdtrunUI
             public int D2px(double X)
             {
                 return Convert.ToInt32(Dot(xymatrix[0]
-                                          , new double[] { 0d, double.IsInfinity(X) ? High_datay : X, 1d }
+                                          , new double[] { double.IsInfinity(X) ? High_datay : X, 0d, 1d }
                                           )
                                       );
             }
@@ -589,7 +589,7 @@ namespace DpdtrunUI
                 List<Label> labels = new List<Label>
                     {
                         F1.diff_yoctom_lbl
-                        , F1.diff_zetam_lbl
+                        , F1.diff_zeptom_lbl
                         , F1.diff_attom_lbl
                         , F1.diff_femtom_lbl
                         , F1.diff_picom_lbl
@@ -600,6 +600,11 @@ namespace DpdtrunUI
                         , F1.diff_km_lbl
                         , F1.diff_megam_lbl
                         , F1.diff_gigam_lbl
+                        , F1.diff_teram_lbl
+                        , F1.diff_petam_lbl
+                        , F1.diff_exam_lbl
+                        , F1.diff_zettam_lbl
+                        , F1.diff_yottam_lbl
                     };
 
                 // - Plot differences only if some are non-zero
@@ -631,6 +636,16 @@ namespace DpdtrunUI
                     {
                         log1kdiffs.Add((val > 0 && !Double.IsInfinity(val)) ? (Math.Log(val) / log1k) : zerolim);
                     }
+
+                    // Locate the bottom abscissa axis title
+                    F1.sc_posn_lbl.Location = new Point((Xlft + Xrgt - F1.sc_posn_lbl.Size.Width) / 2
+                                                        , F1.sc_posn_lbl.Location.Y
+                                                        );
+
+                    // Locate the left ordinate axis title
+                    F1.cb3_posn_lbl.Location = new Point(F1.cb3_posn_lbl.Location.X
+                                                        , (Ytop + Ybot - F1.cb3_posn_lbl.Size.Height) / 2
+                                                        );
 
                     // - Set ordinate to log limits
                     Setlims(lolim - 0.5, hilim + 0.5, false);
