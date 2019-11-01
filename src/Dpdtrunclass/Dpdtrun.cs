@@ -280,7 +280,6 @@ namespace Dpdtrunclass
             }
         }
 
-
         ////////////////////////////////////////////////////////////////
         /// <summary>
         ///           Dpdtrun Constructor
@@ -288,6 +287,84 @@ namespace Dpdtrunclass
         public Dpdtrun()
         {
             Uninitialize_models();
+        }
+
+        private const String head = "head";
+        private const String d = "d";
+        private const String h = "h";
+        private const String r = "r";
+        private String gettx(string sVal, string tx, string pfx="") { return String.Format("{0}<t{1}>{2}</t{1}>", pfx, tx, sVal); }
+        private String getthead(string sVal, string pfx = "") { return gettx(sVal, head, pfx); }
+        private String gettd(double sVal, string pfx = "") { return gettx(Convert.ToString(sVal), d, pfx); }
+        private String getth(string sVal, string pfx = "") { return gettx(sVal, h, pfx); }
+        private String gettr(string sVal, string pfx = "") { return gettx(sVal, r, pfx); }
+        private String gethdpair(string sName, double xVal) { return gettr(gettd(xVal, getth(sName))); }
+
+        public void Write_xls(string xlspath)
+        {
+            List<string> s_list = new List<string>
+            { "<html"
+            , " xmlns:o=\"urn:schemas-microsoft-com:office:office\""
+            , " xmlns:x=\"urn:schemas-microsoft-com:office:excel\""
+            , " xmlns=\"http://www.w3.org/TR/REC-html40\""
+            , ">"
+            , "<head>"
+            , "  <!--[if gte mso 9]>"
+            , "    <xml>"
+            , "    <x:ExcelWorkbook>"
+            , "    <x:ExcelWorksheets>"
+            , "    <x:ExcelWorksheet>"
+            , "    <x:Name>export</x:Name>"
+            , "    <x:WorksheetOptions>"
+            , "    <x:DisplayGridlines>"
+            , "    </x:DisplayGridlines>"
+            , "    </x:WorksheetOptions>"
+            , "    </x:ExcelWorksheet>"
+            , "    </x:ExcelWorksheets>"
+            , "    </x:ExcelWorkbook>"
+            , "    </xml>"
+            , "  <![endif]-->"
+            , "<meta http-equiv=\"content-type\" content=\"text/plain; charset=UTF-8\"/>"
+            , "</head><body><table><thead><tr><th>DPDTRUN.pro</th></tr></thead><tbody>"
+            , gethdpair("Flyby Speed, km/s",Vfb)
+            , gethdpair("Miss distance, km",Deltay)
+            , gethdpair("TMR, &mu;radian/s",Tmr_urad)
+            , gethdpair("S/C initial offset, km ",Sc_init)
+            , gethdpair("CB3 initial offset, km ",X_cb3_init)
+            , gettr(gettd(X_cb3_limit_hi,gettd(X_cb3_limit_lo,getth("Ellipse extents, km"))))
+            , gethdpair("Integration step, s ", DelT)
+            , gethdpair("Miss distance, s", Deltay/Vfb)
+            , gethdpair("S/C initial offset, s ", Sc_init/Vfb)
+            , gethdpair("CB3 initial offset, s ", X_cb3_init/Vfb)
+            , gettr(gettd(X_cb3_limit_hi / Vfb, gettd(X_cb3_limit_lo / Vfb, getth("Ellipse extents, km"))))
+            , gettr(
+                getth("RK4-Analytical, km"
+                , getth("CB3-TCA, RK4, s"
+                  , getth("CB3-TCA, Analytical, s"
+                    , getth("CB3-TCA, RK4, km"
+                      , getth("CB3-TCA, Analytical, km"
+                        ,getth("T-TCA, s")))))))
+            };
+
+            int L = Integration_result[0].Count;
+            for (int i=0; i < L; ++i)
+            {
+                double r = Integration_result[2][i];
+                double a = Integration_result[1][i];
+
+                s_list.Add(gettr(
+                           gettd(r - a
+                           , gettd(r / Vfb
+                             , gettd(a / Vfb
+                               , gettd(r
+                                 , gettd(a
+                                   , gettd(Integration_result[0][i]))))))));
+            }
+            s_list.Add("</tbody></table></body></html>");
+
+            System.IO.StreamWriter xls_sw = new System.IO.StreamWriter(xlspath);
+            foreach (string s in s_list) { xls_sw.WriteLine(s); }
+            xls_sw.Close();
         }
     }
 }

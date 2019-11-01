@@ -13,8 +13,6 @@ namespace DpdtrunUI
 {
     public partial class Form1 : Form
     {
-        private static bool first_ofd_call = true;
-
         private Dpdtrunclass.Dpdtrun Dpdtrun;
 
         private Color log_save_color;
@@ -41,9 +39,8 @@ namespace DpdtrunUI
         /// <param name="e">Not used</param>
         private void excel_btn_Click(object sender, EventArgs e)
         {
-            if (first_ofd_call)
+            if (excel_ofd.InitialDirectory is null)
             {
-                first_ofd_call = false;
                 excel_ofd.InitialDirectory = Application.StartupPath;
             }
 
@@ -51,6 +48,9 @@ namespace DpdtrunUI
             {
                 excel_tb.Text = excel_ofd.FileName;
                 excel_ofd.InitialDirectory = Path.GetFullPath(excel_ofd.FileName);
+            } else
+            {
+                excel_tb.Text = "";
             }
         }
 
@@ -173,6 +173,13 @@ namespace DpdtrunUI
                 }
 
                 Plot_data();
+
+                if (excel_tb.Text.EndsWith(".xls"))
+                {
+                    Dpdtrun.Write_xls(excel_tb.Text);
+                    excel_tb.Text = "";
+                    send_log_lbl("Integration complete\nwrote to eXcel file");
+                }
             }
             catch (System.Exception theexcept)
             {
