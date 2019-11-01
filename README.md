@@ -1,8 +1,11 @@
 # Quickstart
 
-On Windows-x64, .NET 3.0:  download, and extract contents of, 
+On Windows-10-x64, .NET 3.0:  download, and extract contents of, 
 [this ZIP file](https://github.com/drbitboy/Dpdtrun/raw/master/Dpdtrun-win-x64-dotnet3.0.zip),
 then run resulting Dpdtrun.exe.
+
+Windows-7-x64 [here](http://hosting.astro.cornell.edu/~carcich/20191030/Dpdtrun-win-x64-netframework-4.6.1.zip);
+installer [here](http://hosting.astro.cornell.edu/~carcich/20191030/DpdtrunUI_installer-netframework-4.6.1.zip)l these should also work on Win10.
 
 # Details
 
